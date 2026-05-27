@@ -2,8 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WeMov Pro ‚Äî Prospec√ß√£o YouTube</title>
+<title>WeMov Pro &#8212; Prospec&#231;&#227;o YouTube</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -19,7 +20,7 @@
 }
 body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;overflow-x:hidden}
 
-/* ‚îÄ‚îÄ HEADER ‚îÄ‚îÄ */
+/* ── HEADER ── */
 .hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .logo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;letter-spacing:-.3px}
 .logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
@@ -30,7 +31,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .dot.err{background:var(--red);box-shadow:0 0 5px var(--red)}
 .warn-badge{font-size:11px;color:var(--yellow);display:flex;align-items:center;gap:5px;cursor:pointer;padding:4px 10px;border-radius:20px;border:1px solid rgba(234,179,8,.25);background:rgba(234,179,8,.07)}
 
-/* ‚îÄ‚îÄ BUTTONS ‚îÄ‚îÄ */
+/* ── BUTTONS ── */
 .btn{border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;border-radius:var(--rs);padding:7px 14px;transition:all .15s;display:inline-flex;align-items:center;gap:6px;line-height:1}
 .btn-primary{background:var(--accent);color:#fff}
 .btn-primary:hover{background:#4a5be6;transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,108,249,.35)}
@@ -45,7 +46,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .btn-sm{padding:4px 10px;font-size:12px}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 
-/* ‚îÄ‚îÄ STATS ‚îÄ‚îÄ */
+/* ── STATS ── */
 .stats{display:flex;gap:12px;padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--border)}
 .stat{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;min-width:0;transition:border-color .2s}
 .stat:hover{border-color:var(--subtle)}
@@ -53,7 +54,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .stat-val{font-size:28px;font-weight:800;margin-top:4px;line-height:1;letter-spacing:-1px}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
 
-/* ‚îÄ‚îÄ ACTION BAR ‚îÄ‚îÄ */
+/* ── ACTION BAR ── */
 .abar{padding:10px 24px;display:flex;align-items:center;gap:10px;background:var(--surface);border-bottom:1px solid var(--border)}
 .sep{width:1px;height:22px;background:var(--border)}
 .tgl-grp{display:flex;align-items:center;gap:7px}
@@ -66,7 +67,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .tgl input:checked+.tgl-sl::after{transform:translateX(15px)}
 .abar-right{margin-left:auto;font-size:11px;color:var(--faint)}
 
-/* ‚îÄ‚îÄ KANBAN ‚îÄ‚îÄ */
+/* ── KANBAN ── */
 .kb-wrap{overflow-x:auto;padding:20px 24px;min-height:calc(100vh - 210px)}
 .kb-board{display:flex;gap:14px;min-width:max-content;align-items:flex-start}
 .col{width:256px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;max-height:calc(100vh - 230px)}
@@ -79,7 +80,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .empty-col{text-align:center;padding:24px 8px;color:var(--faint);font-size:12px}
 .empty-col .ei{font-size:22px;margin-bottom:6px;opacity:.35}
 
-/* ‚îÄ‚îÄ CARD ‚îÄ‚îÄ */
+/* ── CARD ── */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:11px;cursor:pointer;transition:all .14s;user-select:none}
 .card:hover{background:var(--card-h);border-color:var(--subtle);transform:translateY(-1px);box-shadow:0 4px 18px rgba(0,0,0,.35)}
 .card.dragging{opacity:.45;cursor:grabbing}
@@ -95,7 +96,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .fu-row.on{color:var(--cyan)}
 .fu-row:hover{color:var(--text)}
 
-/* ‚îÄ‚îÄ ACTIVITY PANEL ‚îÄ‚îÄ */
+/* ── ACTIVITY PANEL ── */
 .act-panel{width:272px;min-width:272px;background:var(--surface);border-left:1px solid var(--border);height:calc(100vh - 54px);overflow-y:auto;padding:16px;position:fixed;right:0;top:54px;transform:translateX(100%);transition:transform .25s;z-index:90}
 .act-panel.open{transform:translateX(0)}
 .act-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -104,7 +105,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .act-time{font-size:10px;color:var(--muted)}
 .act-msg{font-size:12px;line-height:1.45;margin-top:2px}
 
-/* ‚îÄ‚îÄ MODALS ‚îÄ‚îÄ */
+/* ── MODALS ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
 .overlay.hidden{display:none}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
@@ -115,13 +116,13 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .m-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px;line-height:1;border-radius:4px}
 .m-close:hover{color:var(--text);background:var(--dim)}
 
-/* ‚îÄ‚îÄ TABS ‚îÄ‚îÄ */
+/* ── TABS ── */
 .tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:18px;gap:4px}
 .tab{padding:8px 14px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;border-radius:var(--rs) var(--rs) 0 0}
 .tab:hover{color:var(--text);background:var(--surface)}
 .tab.on{color:var(--text);border-bottom-color:var(--accent);background:var(--surface)}
 
-/* ‚îÄ‚îÄ FORM ‚îÄ‚îÄ */
+/* ── FORM ── */
 .field{margin-bottom:14px}
 .field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
 .field input,.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 11px;outline:none;resize:vertical;transition:border-color .15s}
@@ -131,15 +132,15 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .field select option{background:var(--card)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-/* ‚îÄ‚îÄ PROGRESS ‚îÄ‚îÄ */
+/* ── PROGRESS ── */
 .prog-bar{height:6px;background:var(--dim);border-radius:3px;overflow:hidden;margin:12px 0}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:3px;transition:width .5s}
 
-/* ‚îÄ‚îÄ SPINNER ‚îÄ‚îÄ */
+/* ── SPINNER ── */
 .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-/* ‚îÄ‚îÄ TOAST ‚îÄ‚îÄ */
+/* ── TOAST ── */
 .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 15px;font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.5);animation:ti .2s ease;display:flex;align-items:center;gap:8px;pointer-events:all;max-width:320px}
 .toast.ok{border-left:3px solid var(--green)}
@@ -147,7 +148,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14
 .toast.info{border-left:3px solid var(--accent)}
 @keyframes ti{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-/* ‚îÄ‚îÄ MISC ‚îÄ‚îÄ */
+/* ── MISC ── */
 hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 .flex{display:flex}.gap8{gap:8px}.f1{flex:1}.mt8{margin-top:8px}.mt16{margin-top:16px}
 .muted{color:var(--muted)}.small{font-size:12px}
@@ -161,31 +162,31 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 <!-- HEADER -->
 <header class="hdr">
   <div class="logo">
-    <div class="logo-mark">üé¨</div>
+    <div class="logo-mark">&#127909;</div>
     WeMov Pro
-    <span style="font-weight:300;color:var(--muted);font-size:12px">/&nbsp;Prospec√ß√£o</span>
+    <span style="font-weight:300;color:var(--muted);font-size:12px">/&nbsp;Prospecção</span>
   </div>
   <div class="hdr-right">
-    <div id="warn-badge" class="warn-badge" onclick="openSettings('backend')" style="display:none">‚ö†Ô∏è Backend n√£o configurado</div>
+    <div id="warn-badge" class="warn-badge" onclick="openSettings('backend')" style="display:none">&#9888; Backend nao configurado</div>
     <div class="conn-badge"><div class="dot" id="db-dot"></div><span id="db-txt">Conectando...</span></div>
-    <button class="btn btn-ghost btn-sm" onclick="openActPanel()">üìã Feed</button>
-    <button class="btn btn-ghost btn-sm" onclick="openSettings('templates')">‚öôÔ∏è Config</button>
+    <button class="btn btn-ghost btn-sm" onclick="openActPanel()">&#128203; Feed</button>
+    <button class="btn btn-ghost btn-sm" onclick="openSettings('templates')">&#9881; Config</button>
   </div>
 </header>
 
 <!-- STATS -->
 <div class="stats" id="stats">
-  <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="s-total" style="color:var(--text)">‚Äì</div><div class="stat-sub">na pipeline</div></div>
-  <div class="stat"><div class="stat-lbl">Pendentes</div><div class="stat-val" id="s-pend" style="color:var(--yellow)">‚Äì</div><div class="stat-sub">aguardando aprova√ß√£o</div></div>
-  <div class="stat"><div class="stat-lbl">Emails Enviados</div><div class="stat-val" id="s-sent" style="color:var(--purple)">‚Äì</div><div class="stat-sub">acumulado</div></div>
-  <div class="stat"><div class="stat-lbl">Em Contato</div><div class="stat-val" id="s-reply" style="color:var(--green)">‚Äì</div><div class="stat-sub">responderam</div></div>
-  <div class="stat"><div class="stat-lbl">Follow-ups</div><div class="stat-val" id="s-fu" style="color:var(--cyan)">‚Äì</div><div class="stat-sub">ativos</div></div>
+  <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="s-total" style="color:var(--text)">–</div><div class="stat-sub">na pipeline</div></div>
+  <div class="stat"><div class="stat-lbl">Pendentes</div><div class="stat-val" id="s-pend" style="color:var(--yellow)">–</div><div class="stat-sub">aguardando aprovação</div></div>
+  <div class="stat"><div class="stat-lbl">Emails Enviados</div><div class="stat-val" id="s-sent" style="color:var(--purple)">–</div><div class="stat-sub">acumulado</div></div>
+  <div class="stat"><div class="stat-lbl">Em Contato</div><div class="stat-val" id="s-reply" style="color:var(--green)">–</div><div class="stat-sub">responderam</div></div>
+  <div class="stat"><div class="stat-lbl">Follow-ups</div><div class="stat-val" id="s-fu" style="color:var(--cyan)">–</div><div class="stat-sub">ativos</div></div>
 </div>
 
 <!-- ACTION BAR -->
 <div class="abar">
-  <button class="btn btn-primary" id="btn-find" onclick="findLeads()">üîç Buscar Leads</button>
-  <button class="btn btn-ghost"  id="btn-send" onclick="sendEmails()">üìß Enviar Emails</button>
+  <button class="btn btn-primary" id="btn-find" onclick="findLeads()">&#128269; Buscar Leads</button>
+  <button class="btn btn-ghost"  id="btn-send" onclick="sendEmails()">&#128140; Enviar Emails</button>
   <div class="sep"></div>
   <div class="tgl-grp">
     <span class="tgl-lbl">Busca auto</span>
@@ -196,8 +197,8 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
     <label class="tgl"><input type="checkbox" id="tog-auto-send" onchange="saveToggles()"><span class="tgl-sl"></span></label>
   </div>
   <div class="sep"></div>
-  <button class="btn btn-ghost btn-sm" onclick="loadAll()">‚Ü∫</button>
-  <div class="abar-right" id="last-upd">‚Äì</div>
+  <button class="btn btn-ghost btn-sm" onclick="loadAll()">Atualizar</button>
+  <div class="abar-right" id="last-upd">–</div>
 </div>
 
 <!-- KANBAN -->
@@ -207,7 +208,7 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 <div class="act-panel" id="act-panel">
   <div class="act-hdr">
     <div style="font-size:13px;font-weight:700">Atividade</div>
-    <button class="btn btn-ghost btn-sm" onclick="closeActPanel()">‚úï</button>
+    <button class="btn btn-ghost btn-sm" onclick="closeActPanel()">✕</button>
   </div>
   <div id="act-list"><div class="muted small" style="text-align:center;padding:20px">Sem atividade</div></div>
 </div>
@@ -221,8 +222,8 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 <div class="overlay hidden" id="m-lead">
   <div class="modal modal-lg">
     <div class="m-hdr">
-      <div class="m-title" id="ml-title">‚Äì</div>
-      <button class="m-close" onclick="closeM('m-lead')">‚úï</button>
+      <div class="m-title" id="ml-title">–</div>
+      <button class="m-close" onclick="closeM('m-lead')">✕</button>
     </div>
     <div class="tabs">
       <div class="tab on" id="lt-info"   onclick="leadTab('info')">Geral</div>
@@ -250,11 +251,11 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
           </select>
         </div>
       </div>
-      <div class="field"><label>Notas</label><textarea id="l-notes" placeholder="Observa√ß√µes..."></textarea></div>
+      <div class="field"><label>Notas</label><textarea id="l-notes" placeholder="Observações..."></textarea></div>
       <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:14px">
         <div class="flex gap8" style="align-items:center;justify-content:space-between">
           <div>
-            <div style="font-size:13px;font-weight:600">Follow-up autom√°tico</div>
+            <div style="font-size:13px;font-weight:600">Follow-up automático</div>
             <div class="small muted mt8" id="fu-desc">Desativado</div>
           </div>
           <label class="tgl"><input type="checkbox" id="l-fu" onchange="onFuToggle()"><span class="tgl-sl"></span></label>
@@ -274,7 +275,7 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 
     <hr>
     <div class="flex gap8">
-      <button class="btn btn-primary f1" onclick="saveLead()">üíæ Salvar</button>
+      <button class="btn btn-primary f1" onclick="saveLead()">&#128190; Salvar</button>
       <button class="btn btn-ghost" onclick="closeM('m-lead')">Cancelar</button>
     </div>
   </div>
@@ -284,8 +285,8 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 <div class="overlay hidden" id="m-cfg">
   <div class="modal modal-lg">
     <div class="m-hdr">
-      <div class="m-title">‚öôÔ∏è Configura√ß√µes</div>
-      <button class="m-close" onclick="closeM('m-cfg')">‚úï</button>
+      <div class="m-title">&#9881; Configurações</div>
+      <button class="m-close" onclick="closeM('m-cfg')">✕</button>
     </div>
     <div class="tabs">
       <div class="tab on" id="st-tpl"     onclick="cfgTab('tpl')">Templates</div>
@@ -295,14 +296,14 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 
     <div id="sc-tpl">
       <div class="field">
-        <label>Template ‚Äî 1¬∫ Contato</label>
+        <label>Template — 1º Contato</label>
         <textarea class="big" id="tpl1" style="min-height:200px"></textarea>
       </div>
       <div class="field">
-        <label>Template ‚Äî Follow-up</label>
+        <label>Template — Follow-up</label>
         <textarea class="big" id="tpl2" style="min-height:180px"></textarea>
       </div>
-      <div class="small muted">Vari√°veis: <code>{first_name}</code> <code>{channel_name}</code> <code>{niche}</code> <code>{sender}</code></div>
+      <div class="small muted">Variáveis: <code>{first_name}</code> <code>{channel_name}</code> <code>{niche}</code> <code>{sender}</code></div>
     </div>
 
     <div id="sc-backend" style="display:none">
@@ -310,21 +311,21 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
         <label>URL do Backend (Render.com)</label>
         <input type="url" id="cfg-url" placeholder="https://seu-app.onrender.com">
       </div>
-      <div class="small muted" style="margin:-8px 0 14px">Preencha ap√≥s o deploy no Render.com. Necess√°rio para "Buscar Leads" e "Enviar Emails".</div>
-      <button class="btn btn-ghost btn-sm" onclick="testBackend()">üîå Testar conex√£o</button>
+      <div class="small muted" style="margin:-8px 0 14px">Preencha após o deploy no Render.com. Necessário para "Buscar Leads" e "Enviar Emails".</div>
+      <button class="btn btn-ghost btn-sm" onclick="testBackend()">&#128268; Testar conexão</button>
     </div>
 
     <div id="sc-search" style="display:none">
       <div class="grid2">
-        <div class="field"><label>Inscritos m√≠nimos</label><input type="number" id="cfg-smin" value="15000"></div>
-        <div class="field"><label>Inscritos m√°ximos</label><input type="number" id="cfg-smax" value="100000"></div>
+        <div class="field"><label>Inscritos mínimos</label><input type="number" id="cfg-smin" value="15000"></div>
+        <div class="field"><label>Inscritos máximos</label><input type="number" id="cfg-smax" value="100000"></div>
       </div>
-      <div class="field"><label>Dias at√© o follow-up (quando ativado)</label><input type="number" id="cfg-fudays" value="3"></div>
+      <div class="field"><label>Dias até o follow-up (quando ativado)</label><input type="number" id="cfg-fudays" value="3"></div>
     </div>
 
     <hr>
     <div class="flex gap8">
-      <button class="btn btn-primary f1" onclick="saveSettings()">üíæ Salvar</button>
+      <button class="btn btn-primary f1" onclick="saveSettings()">&#128190; Salvar</button>
       <button class="btn btn-ghost" onclick="closeM('m-cfg')">Cancelar</button>
     </div>
   </div>
@@ -334,7 +335,7 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 <div class="overlay hidden" id="m-prog">
   <div class="modal modal-sm">
     <div class="m-hdr" style="margin-bottom:14px">
-      <div class="m-title">üîç Buscando Leads</div>
+      <div class="m-title">&#128269; Buscando Leads</div>
     </div>
     <div id="prog-msg" class="small muted" style="margin-bottom:10px">Iniciando...</div>
     <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
@@ -350,9 +351,9 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
   <div class="modal modal-sm">
     <div class="m-hdr">
       <div class="m-title" id="conf-title">Confirmar</div>
-      <button class="m-close" onclick="closeM('m-confirm')">‚úï</button>
+      <button class="m-close" onclick="closeM('m-confirm')">✕</button>
     </div>
-    <div id="conf-msg" class="small muted" style="margin-bottom:20px">‚Äì</div>
+    <div id="conf-msg" class="small muted" style="margin-bottom:20px">–</div>
     <div class="flex gap8">
       <button class="btn btn-primary f1" id="conf-ok">Confirmar</button>
       <button class="btn btn-ghost" onclick="closeM('m-confirm')">Cancelar</button>
@@ -361,20 +362,20 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 </div>
 
 <script>
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // CONFIG
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 const SB_URL = 'https://jegccnxuzzyqmhfenhni.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZ2Njbnh1enp5cW1oZmVuaG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzcyNTUsImV4cCI6MjA5NTMxMzI1NX0.0QftXiHF3qbbDkwTqgwElz2-PgW5jMz7EbS7tkFXHAA';
 
 const STAGES = [
-  { id:'pendente',      label:'Pendente',      color:'#eab308', icon:'‚è≥' },
-  { id:'lead',          label:'Lead',           color:'#5b6cf9', icon:'üéØ' },
-  { id:'email_enviado', label:'Email Enviado',  color:'#a855f7', icon:'üìß' },
-  { id:'sample_video',  label:'Sample Video',   color:'#f97316', icon:'üé¨' },
-  { id:'em_contato',    label:'Em Contato',     color:'#22c55e', icon:'üí¨' },
-  { id:'follow_up',     label:'Follow Up',      color:'#06b6d4', icon:'üîÑ' },
-  { id:'desistente',    label:'Desistente',     color:'#6b7280', icon:'‚ùå' },
+  { id:'pendente',      label:'Pendente',      color:'#eab308', icon:'&#8987;' },
+  { id:'lead',          label:'Lead',           color:'#5b6cf9', icon:'&#127919;' },
+  { id:'email_enviado', label:'Email Enviado',  color:'#a855f7', icon:'&#128140;' },
+  { id:'sample_video',  label:'Sample Video',   color:'#f97316', icon:'&#127909;' },
+  { id:'em_contato',    label:'Em Contato',     color:'#22c55e', icon:'&#128172;' },
+  { id:'follow_up',     label:'Follow Up',      color:'#06b6d4', icon:'&#128260;' },
+  { id:'desistente',    label:'Desistente',     color:'#6b7280', icon:'&#10060;' },
 ];
 
 const TPL1 = `Subject: I already edited a video for your channel
@@ -403,18 +404,18 @@ If you are curious, just reply here and I will send it right away.
 {sender}
 Video Editor`;
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // STATE
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 const sb = supabase.createClient(SB_URL, SB_KEY);
 let leads = [], activity = [], cfg = {}, cur = null;
 let pollT = null, curLeadTab = 'info', curCfgTab = 'tpl';
 
 const backendUrl = () => cfg.backend_url || localStorage.getItem('bk_url') || '';
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // INIT
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 async function init() {
   try {
     await loadCfg();
@@ -438,9 +439,9 @@ function checkBk() {
   document.getElementById('warn-badge').style.display = backendUrl() ? 'none' : 'flex';
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // DATA
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 async function loadAll() {
   const [l, a] = await Promise.all([
     sb.from('channels').select('*').order('created', { ascending: false }),
@@ -486,9 +487,9 @@ async function log(type, msg, lid = null) {
   } catch(e) {}
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // RENDER
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 function render() { renderStats(); renderBoard(); renderAct(); }
 
 function renderStats() {
@@ -537,30 +538,33 @@ function cardHtml(l) {
   let actions = '';
   if (l.stage === 'pendente') {
     actions = `
-      <button class="btn btn-ok btn-sm" onclick="approve('${l.id}',event)">‚úì Aprovar</button>
-      <button class="btn btn-del btn-sm" onclick="discard('${l.id}',event)">‚úï</button>`;
+      <button class="btn btn-ok btn-sm" onclick="approve('${l.id}',event)">✓ Aprovar</button>
+      <button class="btn btn-del btn-sm" onclick="discard('${l.id}',event)">✕</button>`;
   } else if (l.stage === 'email_enviado') {
     actions = `
       <div class="fu-row ${l.followup_enabled?'on':''}" onclick="quickFu('${l.id}',event)">
-        <span>${l.followup_enabled ? 'üîî' : 'üîï'}</span>
+        <span>${l.followup_enabled ? '&#128276;' : '&#128277;'}</span>
         ${l.followup_enabled ? 'Follow-up ativo' : 'Ativar follow-up'}
       </div>`;
   } else if (l.stage === 'em_contato' && l.reply_content) {
-    actions = `<button class="btn btn-ok btn-sm" onclick="openLead('${l.id}',event,'reply')">üí¨ Ver resposta</button>`;
+    actions = `<button class="btn btn-ok btn-sm" onclick="openLead('${l.id}',event,'reply')">&#128172; Ver resposta</button>`;
   }
 
   const replyBox = (l.stage === 'em_contato' && l.reply_content)
-    ? `<div class="c-reply">üí¨ ${l.reply_content.slice(0,100)}</div>` : '';
+    ? `<div class="c-reply">&#128172; ${l.reply_content.slice(0,100)}</div>` : '';
 
   return `<div class="card" draggable="true" data-id="${l.id}" onclick="openLead('${l.id}',event)">
-    <div class="c-name">${l.name||'‚Äì'}</div>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;margin-bottom:6px">
+      <div class="c-name" style="margin-bottom:0;flex:1">${l.name||'–'}</div>
+      <button class="btn btn-del btn-sm" style="padding:2px 8px;font-size:11px;flex-shrink:0;opacity:.6" onclick="deleteLead('${l.id}',event)">&#10005;</button>
+    </div>
     <div class="c-meta">
       ${l.niche ? `<span class="badge" style="background:rgba(91,108,249,.14);color:#8fa3ff">${l.niche.slice(0,28)}</span>` : ''}
-      ${l.subs  ? `<span class="badge" style="background:var(--surface);color:var(--muted)">üë• ${subs}</span>` : ''}
+      ${l.subs  ? `<span class="badge" style="background:var(--surface);color:var(--muted)">${subs} subs</span>` : ''}
     </div>
-    <div class="c-email">${l.email||'‚Äì'}</div>
+    <div class="c-email">${l.email||'–'}</div>
     ${replyBox}
-    ${prev ? `<div class="c-preview">${prev}‚Ä¶</div>` : ''}
+    ${prev ? `<div class="c-preview">${prev}…</div>` : ''}
     ${actions ? `<div class="c-actions">${actions}</div>` : ''}
   </div>`;
 }
@@ -576,9 +580,9 @@ function renderAct() {
   }).join('');
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // DRAG & DROP
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 let dragId = null;
 
 function onOver(e, sid) {
@@ -596,16 +600,16 @@ async function onDrop(e, sid) {
   try {
     await upd(dragId, { stage: sid });
     const lbl = STAGES.find(s => s.id === sid)?.label || sid;
-    await log('move', `"${lead.name}" ‚Üí ${lbl}`, dragId);
+    await log('move', `"${lead.name}" → ${lbl}`, dragId);
     if (sid === 'lead' && cfg.auto_send === 'true') triggerSendOne(dragId);
     render();
   } catch(err) { toast('Erro: '+err.message,'err'); }
   dragId = null;
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // ACTIONS
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 async function approve(id, e) {
   e?.stopPropagation();
   const l = leads.find(x => x.id === id); if (!l) return;
@@ -628,6 +632,24 @@ async function discard(id, e) {
   } catch(err) { toast(err.message,'err'); }
 }
 
+async function deleteLead(id, e) {
+  e?.stopPropagation();
+  const l = leads.find(x => x.id === id); if (!l) return;
+  confirm2(
+    'Excluir lead',
+    `Excluir "${l.name}" permanentemente? Essa acao nao pode ser desfeita.`,
+    async () => {
+      try {
+        const { error } = await sb.from('channels').delete().eq('id', id);
+        if (error) throw error;
+        leads = leads.filter(x => x.id !== id);
+        render();
+        toast(`"${l.name}" excluido.`, 'ok');
+      } catch(err) { toast(err.message, 'err'); }
+    }
+  );
+}
+
 async function quickFu(id, e) {
   e?.stopPropagation();
   const l = leads.find(x => x.id === id); if (!l) return;
@@ -640,11 +662,11 @@ async function quickFu(id, e) {
   } catch(err) { toast(err.message,'err'); }
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // BACKEND
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 function checkBackend() {
-  if (!backendUrl()) { toast('Configure a URL do backend em ‚öôÔ∏è Config ‚Üí Backend','err'); return false; }
+  if (!backendUrl()) { toast('Configure a URL do backend em &#9881; Config → Backend','err'); return false; }
   return true;
 }
 
@@ -660,12 +682,12 @@ async function findLeads() {
       pollT = setInterval(pollJob, 2500);
       await log('find_leads', 'Busca por novos leads iniciada');
     } else if (d.error === 'running') {
-      toast('Busca j√° est√° em andamento', 'info');
-      btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
+      toast('Busca já está em andamento', 'info');
+      btn.disabled = false; btn.innerHTML = '&#128269; Buscar Leads';
     }
   } catch(err) {
     toast('Erro: '+err.message, 'err');
-    btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
+    btn.disabled = false; btn.innerHTML = '&#128269; Buscar Leads';
   }
 }
 
@@ -681,9 +703,9 @@ async function pollJob() {
       closeM('m-prog');
       await loadAll();
       const btn = document.getElementById('btn-find');
-      btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
-      toast(`Busca conclu√≠da! ${s.found||0} novos leads.`, 'ok');
-      await log('find_done', `Busca conclu√≠da: ${s.found||0} leads adicionados`);
+      btn.disabled = false; btn.innerHTML = '&#128269; Buscar Leads';
+      toast(`Busca concluída! ${s.found||0} novos leads.`, 'ok');
+      await log('find_done', `Busca concluída: ${s.found||0} leads adicionados`);
     }
   } catch(e) {}
 }
@@ -692,7 +714,7 @@ function cancelFind() {
   clearInterval(pollT);
   closeM('m-prog');
   const btn = document.getElementById('btn-find');
-  btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
+  btn.disabled = false; btn.innerHTML = '&#128269; Buscar Leads';
 }
 
 async function sendEmails() {
@@ -709,7 +731,7 @@ async function sendEmails() {
       await log('emails_sent', `${d.sent||0} emails enviados para leads`);
       await loadAll();
     } catch(err) { toast(err.message,'err'); }
-    finally { btn.disabled=false; btn.innerHTML='üìß Enviar Emails'; }
+    finally { btn.disabled=false; btn.innerHTML='&#128140; Enviar Emails'; }
   });
 }
 
@@ -723,15 +745,15 @@ async function testBackend() {
   try {
     const r = await fetch(url+'/health');
     const d = await r.json();
-    toast(d.status==='ok' ? '‚úÖ Backend conectado!' : '‚ùå Resposta inesperada', d.status==='ok'?'ok':'err');
-  } catch(e) { toast('‚ùå N√£o conectou: '+e.message, 'err'); }
+    toast(d.status==='ok' ? '[OK] Backend conectado!' : '&#10060; Resposta inesperada', d.status==='ok'?'ok':'err');
+  } catch(e) { toast('&#10060; Não conectou: '+e.message, 'err'); }
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // LEAD MODAL
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 function openLead(id, e, tab='info') {
-  if (e?.target?.closest?.('.c-actions,.fu-row')) return;
+  if (e?.target?.closest?.('.c-actions,.fu-row,.btn-del')) return;
   const l = leads.find(x => x.id === id); if (!l) return;
   cur = l;
   document.getElementById('ml-title').textContent  = l.name||'Lead';
@@ -747,7 +769,7 @@ function openLead(id, e, tab='info') {
   onFuToggle();
   const ra = document.getElementById('reply-area');
   if (l.reply_content) {
-    const dt = l.replied_at ? new Date(l.replied_at).toLocaleDateString('pt-BR') : '‚Äì';
+    const dt = l.replied_at ? new Date(l.replied_at).toLocaleDateString('pt-BR') : '–';
     ra.innerHTML = `<div class="field"><label>Resposta recebida em ${dt}</label><textarea readonly style="min-height:160px;background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2);color:#a3e6b8">${l.reply_content}</textarea></div>`;
   } else {
     ra.innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted)">Nenhuma resposta detectada ainda.<br><span class="small">O backend verifica respostas automaticamente.</span></div>`;
@@ -779,8 +801,8 @@ async function saveLead() {
 function onFuToggle() {
   const on = document.getElementById('l-fu').checked;
   document.getElementById('fu-desc').textContent = on
-    ? 'Ativo ‚Äî follow-up enviado automaticamente ap√≥s ' + (cfg.followup_days||3) + ' dias sem resposta'
-    : 'Desativado ‚Äî nenhum follow-up ser√° enviado';
+    ? 'Ativo — follow-up enviado automaticamente após ' + (cfg.followup_days||3) + ' dias sem resposta'
+    : 'Desativado — nenhum follow-up será enviado';
 }
 
 function leadTab(t) {
@@ -791,9 +813,9 @@ function leadTab(t) {
   });
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // SETTINGS MODAL
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 function openSettings(tab='tpl') {
   document.getElementById('tpl1').value      = cfg.tpl1 || TPL1;
   document.getElementById('tpl2').value      = cfg.tpl2 || TPL2;
@@ -818,7 +840,7 @@ async function saveSettings() {
     if (cfg.backend_url) localStorage.setItem('bk_url', cfg.backend_url);
     closeM('m-cfg');
     checkBk();
-    toast('Configura√ß√µes salvas!', 'ok');
+    toast('Configurações salvas!', 'ok');
   } catch(err) { toast(err.message,'err'); }
 }
 
@@ -836,9 +858,9 @@ function cfgTab(t) {
   });
 }
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // UI HELPERS
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 const openM  = id => document.getElementById(id).classList.remove('hidden');
 const closeM = id => document.getElementById(id).classList.add('hidden');
 const openActPanel  = () => document.getElementById('act-panel').classList.add('open');
@@ -865,9 +887,9 @@ document.querySelectorAll('.overlay').forEach(o => {
   o.addEventListener('click', e => { if (e.target === o) o.classList.add('hidden'); });
 });
 
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 // START
-// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ═══════════════════════════════════════════════════════════
 init();
 </script>
 </body>
