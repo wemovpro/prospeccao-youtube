@@ -812,37 +812,19 @@ async function wakeBackend() {
 
 async function sendOneEmail(id, e) {
   if (e) e.stopPropagation();
-  if (!checkBackend()) return;
   const btn  = document.getElementById('sendbtn-'+id);
   const lead = leads.find(l => l.id === id);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin"></div>'; }
 
-  const setBtn = (html, disabled) => { if (btn) { btn.disabled = disabled; btn.innerHTML = html; } };
-
-  setBtn('<div class="spin"></div> Acordando...', true);
-  toast('Conectando ao servidor...', 'info');
-
-  const ok = await wakeBackend();
-  if (!ok) {
-    toast('Servidor não respondeu. Tente novamente em 30s.', 'err');
-    setBtn('&#128140; Enviar Email', false);
-    return;
-  }
-
-  setBtn('<div class="spin"></div> Enviando...', true);
   try {
-    const r = await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST', signal: AbortSignal.timeout(30000) });
-    const d = await r.json();
-    if (d.ok) {
-      // 'queued' = enfileirado, email_worker.py envia em instantes
-      toast('&#128140; Email na fila — será enviado em segundos', 'ok');
-      await loadAll();
-    } else {
-      toast('Erro: ' + (d.msg || 'falha no envio'), 'err');
-      setBtn('&#128140; Enviar Email', false);
-    }
+    // Escreve direto no Supabase — sem passar pelo Render
+    const { error } = await sb.from('channels').update({ stage: 'queued_email' }).eq('id', id);
+    if (error) throw error;
+    toast('&#128140; Email na fila — enviando em segundos', 'ok');
+    await loadAll();
   } catch(err) {
-    toast('Erro de conexão: ' + err.message, 'err');
-    setBtn('&#128140; Enviar Email', false);
+    toast('Erro: ' + (err.message || err), 'err');
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#128140; Enviar Email'; }
   }
 }
 
