@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: wemov-prospeccao-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    envVars:
+      - key: SUPABASE_URL
+        value: https://jegccnxuzzyqmhfenhni.supabase.co
+      - key: SUPABASE_ANON_KEY
+        sync: false   # preencher no dashboard do Render
+      - key: GMAIL_ADDRESS
+        value: wemovpro@gmail.com
+      - key: GMAIL_APP_PASSWORD
+        sync: false   # preencher no dashboard do Render
+      - key: SENDER_NAME
+        value: "João"
+      - key: YOUTUBE_API_KEYS
+        sync: false   # cole as 4 keys separadas por vírgula
+      - key: SUBS_MIN
+        value: "15000"
+      - key: SUBS_MAX
+        value: "100000"
+      - key: FOLLOWUP_DAYS
+        value: "3"
