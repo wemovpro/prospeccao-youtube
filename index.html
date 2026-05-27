@@ -794,26 +794,52 @@ async function triggerSendOne(id) {
   try { await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST' }); } catch(e) {}
 }
 
+async function wakeBackend() {
+  // Render free tier dorme após 15min — faz ping com retry pra acordar
+  const url = backendUrl();
+  for (let i = 0; i < 4; i++) {
+    try {
+      const r = await fetch(url + '/health', { signal: AbortSignal.timeout(12000) });
+      if (r.ok) return true;
+    } catch(e) {}
+    await new Promise(r => setTimeout(r, 3000));
+  }
+  return false;
+}
+
 async function sendOneEmail(id, e) {
   if (e) e.stopPropagation();
   if (!checkBackend()) return;
-  const btn = document.getElementById('sendbtn-'+id);
-  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin"></div>'; }
+  const btn  = document.getElementById('sendbtn-'+id);
+  const lead = leads.find(l => l.id === id);
+
+  const setBtn = (html, disabled) => { if (btn) { btn.disabled = disabled; btn.innerHTML = html; } };
+
+  setBtn('<div class="spin"></div> Acordando...', true);
+  toast('Conectando ao servidor...', 'info');
+
+  const ok = await wakeBackend();
+  if (!ok) {
+    toast('Servidor não respondeu. Tente novamente em 30s.', 'err');
+    setBtn('&#128140; Enviar Email', false);
+    return;
+  }
+
+  setBtn('<div class="spin"></div> Enviando...', true);
   try {
-    const r   = await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST' });
-    const d   = await r.json();
+    const r = await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST', signal: AbortSignal.timeout(30000) });
+    const d = await r.json();
     if (d.ok) {
-      const lead = leads.find(l => l.id === id);
-      toast('Email enviado para ' + (lead ? lead.name : id), 'ok');
+      toast('&#10003; Email enviado para ' + (lead ? lead.name : id), 'ok');
       await log('email_sent', 'Email enviado para "' + (lead ? lead.name : id) + '"', id);
       await loadAll();
     } else {
       toast('Erro: ' + (d.msg || 'falha no envio'), 'err');
-      if (btn) { btn.disabled = false; btn.innerHTML = '&#128140; Enviar Email'; }
+      setBtn('&#128140; Enviar Email', false);
     }
   } catch(err) {
-    toast('Erro: ' + err.message, 'err');
-    if (btn) { btn.disabled = false; btn.innerHTML = '&#128140; Enviar Email'; }
+    toast('Erro de conexão: ' + err.message, 'err');
+    setBtn('&#128140; Enviar Email', false);
   }
 }
 
