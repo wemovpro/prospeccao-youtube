@@ -404,7 +404,7 @@ def send_gmail(to, subject, body):
     msg['From']    = f'{SENDER} <{GMAIL_ADDR}>'
     msg['To']      = to
     msg.attach(MIMEText(body, 'plain', 'utf-8'))
-    with smtplib.SMTP('smtp.gmail.com', 587) as s:
+    with smtplib.SMTP('smtp.gmail.com', 587, timeout=25) as s:
         s.ehlo(); s.starttls(); s.login(GMAIL_ADDR, GMAIL_PASS)
         s.sendmail(GMAIL_ADDR, to, msg.as_string())
 
@@ -476,10 +476,14 @@ def api_send_emails():
 @app.route('/api/send-email/<lead_id>', methods=['POST'])
 def api_send_one(lead_id):
     if not GMAIL_PASS:
-        return jsonify({'error': 'GMAIL_APP_PASSWORD not configured'}), 500
+        return jsonify({'ok': False, 'msg': 'GMAIL_APP_PASSWORD não configurado no Render'}), 500
     try:
         ok, msg = do_send_one(lead_id)
         return jsonify({'ok': ok, 'msg': msg})
+    except smtplib.SMTPAuthenticationError:
+        return jsonify({'ok': False, 'msg': 'Senha do Gmail inválida — verifique GMAIL_APP_PASSWORD no Render'}), 500
+    except smtplib.SMTPException as e:
+        return jsonify({'ok': False, 'msg': f'Erro SMTP: {str(e)}'}), 500
     except Exception as e:
         return jsonify({'ok': False, 'msg': str(e)}), 500
 
