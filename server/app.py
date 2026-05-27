@@ -510,17 +510,17 @@ def api_send_emails():
 
 @app.route('/api/send-email/<lead_id>', methods=['POST'])
 def api_send_one(lead_id):
-    if not GMAIL_PASS:
-        return jsonify({'ok': False, 'msg': 'GMAIL_APP_PASSWORD não configurado no Render'}), 500
-    try:
-        ok, msg = do_send_one(lead_id)
-        return jsonify({'ok': ok, 'msg': msg})
-    except smtplib.SMTPAuthenticationError:
-        return jsonify({'ok': False, 'msg': 'Senha do Gmail inválida — verifique GMAIL_APP_PASSWORD no Render'}), 500
-    except smtplib.SMTPException as e:
-        return jsonify({'ok': False, 'msg': f'Erro SMTP: {str(e)}'}), 500
-    except Exception as e:
-        return jsonify({'ok': False, 'msg': str(e)}), 500
+    """Enfileira o lead para envio — o email_worker.py no Mac envia via Gmail."""
+    rows = sb_get('channels', f'id=eq.{lead_id}&select=id,name,email,stage')
+    if not rows:
+        return jsonify({'ok': False, 'msg': 'Lead não encontrado'})
+    l = rows[0]
+    if not l.get('email'):
+        return jsonify({'ok': False, 'msg': 'Lead sem email cadastrado'})
+    # Marca como queued_email — o worker local envia via Gmail SMTP
+    sb_patch('channels', lead_id, {'stage': 'queued_email'})
+    log_activity('email_queued', f'Email enfileirado para "{l["name"]}" ({l["email"]})', lead_id)
+    return jsonify({'ok': True, 'msg': 'queued'})
 
 @app.route('/api/send-followup/<lead_id>', methods=['POST'])
 def api_send_followup(lead_id):
