@@ -588,6 +588,9 @@ function cardHtml(l) {
     actions = `
       <button class="btn btn-ok btn-sm" onclick="approve('${l.id}',event)">✓ Aprovar</button>
       <button class="btn btn-del btn-sm" onclick="discard('${l.id}',event)">✕</button>`;
+  } else if (l.stage === 'lead') {
+    actions = `
+      <button class="btn btn-primary btn-sm" id="sendbtn-${l.id}" onclick="sendOneEmail('${l.id}',event)" style="gap:5px">&#128140; Enviar Email</button>`;
   } else if (l.stage === 'email_enviado') {
     actions = `
       <div class="fu-row ${l.followup_enabled?'on':''}" onclick="quickFu('${l.id}',event)">
@@ -789,6 +792,29 @@ async function sendEmails() {
 
 async function triggerSendOne(id) {
   try { await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST' }); } catch(e) {}
+}
+
+async function sendOneEmail(id, e) {
+  if (e) e.stopPropagation();
+  if (!checkBackend()) return;
+  const btn = document.getElementById('sendbtn-'+id);
+  if (btn) { btn.disabled = true; btn.innerHTML = '<div class="spin"></div>'; }
+  try {
+    const r   = await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST' });
+    const d   = await r.json();
+    if (d.ok) {
+      const lead = leads.find(l => l.id === id);
+      toast('Email enviado para ' + (lead ? lead.name : id), 'ok');
+      await log('email_sent', 'Email enviado para "' + (lead ? lead.name : id) + '"', id);
+      await loadAll();
+    } else {
+      toast('Erro: ' + (d.msg || 'falha no envio'), 'err');
+      if (btn) { btn.disabled = false; btn.innerHTML = '&#128140; Enviar Email'; }
+    }
+  } catch(err) {
+    toast('Erro: ' + err.message, 'err');
+    if (btn) { btn.disabled = false; btn.innerHTML = '&#128140; Enviar Email'; }
+  }
 }
 
 async function testBackend() {
