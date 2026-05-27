@@ -21,6 +21,13 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 
+# Resend SDK (instalado se disponível)
+try:
+    import resend as resend_sdk
+    _RESEND_AVAILABLE = True
+except ImportError:
+    _RESEND_AVAILABLE = False
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -31,9 +38,11 @@ CORS(app)
 # ─────────────────────────────────────────────────────────
 SB_URL     = os.getenv('SUPABASE_URL',     'https://jegccnxuzzyqmhfenhni.supabase.co')
 SB_KEY     = os.getenv('SUPABASE_ANON_KEY')
-GMAIL_ADDR = os.getenv('GMAIL_ADDRESS',    'wemovpro@gmail.com')
-GMAIL_PASS = os.getenv('GMAIL_APP_PASSWORD')
-SENDER     = os.getenv('SENDER_NAME',      'João')
+GMAIL_ADDR   = os.getenv('GMAIL_ADDRESS',    'wemovpro@gmail.com')
+GMAIL_PASS   = os.getenv('GMAIL_APP_PASSWORD')
+RESEND_KEY   = os.getenv('RESEND_API_KEY')
+RESEND_FROM  = os.getenv('RESEND_FROM', 'onboarding@resend.dev')  # troca pelo teu email verificado
+SENDER       = os.getenv('SENDER_NAME',      'João')
 SUBS_MIN   = int(os.getenv('SUBS_MIN',    '15000'))
 SUBS_MAX   = int(os.getenv('SUBS_MAX',    '100000'))
 FU_DAYS    = int(os.getenv('FOLLOWUP_DAYS','3'))
@@ -399,6 +408,32 @@ def run_find_leads():
 # EMAIL SENDING
 # ─────────────────────────────────────────────────────────
 def send_gmail(to, subject, body):
+    """Envia email via Resend (HTTP) se configurado, senão tenta SMTP."""
+
+    # ── Resend (recomendado — funciona no Render free tier) ──────────────────
+    if RESEND_KEY:
+        r = requests.post(
+            'https://api.resend.com/emails',
+            headers={
+                'Authorization': f'Bearer {RESEND_KEY}',
+                'Content-Type':  'application/json',
+            },
+            json={
+                'from':     f'{SENDER} <{RESEND_FROM}>',
+                'to':       [to],
+                'subject':  subject,
+                'text':     body,
+                'reply_to': GMAIL_ADDR,   # respostas vão pro Gmail
+            },
+            timeout=20,
+        )
+        if r.status_code in (200, 201):
+            return
+        raise Exception(f'Resend error {r.status_code}: {r.text}')
+
+    # ── Fallback SMTP (funciona localmente, bloqueado no Render free) ────────
+    if not GMAIL_PASS:
+        raise Exception('Sem método de envio configurado (RESEND_API_KEY ou GMAIL_APP_PASSWORD)')
     msg = MIMEMultipart('alternative')
     msg['Subject'] = subject
     msg['From']    = f'{SENDER} <{GMAIL_ADDR}>'
