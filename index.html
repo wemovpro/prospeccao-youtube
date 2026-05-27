@@ -1,753 +1,873 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>📺 Prospecção de Canais — YouTube</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:       #0f1117;
-      --surface:  #1a1d27;
-      --surface2: #222536;
-      --border:   #2e3150;
-      --accent:   #6c63ff;
-      --text:     #e4e6f0;
-      --muted:    #7b7f9e;
-      --radius:   12px;
-      --shadow:   0 4px 24px rgba(0,0,0,.45);
-    }
-    html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeMov Pro ‚Äî Prospec√ß√£o YouTube</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07080f;--surface:#0c0e18;--card:#101320;--card-h:#151829;
+  --border:#1a1e30;--dim:#232740;--subtle:#2e334f;
+  --accent:#5b6cf9;--accent-glow:rgba(91,108,249,.18);
+  --green:#22c55e;--yellow:#eab308;--red:#ef4444;
+  --cyan:#06b6d4;--purple:#a855f7;--orange:#f97316;--gray:#6b7280;
+  --text:#e2e8f0;--muted:#64748b;--faint:#3a4060;
+  --r:10px;--rs:6px;--font:'Inter',-apple-system,sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;min-height:100vh;overflow-x:hidden}
 
-    /* ── Header ── */
-    header {
-      display: flex; align-items: center; gap: 14px;
-      padding: 16px 24px; background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 100;
-    }
-    header .logo { font-size: 1.4rem; }
-    header h1 { font-size: 1.1rem; font-weight: 700; }
-    header h1 span { color: var(--accent); }
-    .header-right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+/* ‚îÄ‚îÄ HEADER ‚îÄ‚îÄ */
+.hdr{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:800;letter-spacing:-.3px}
+.logo-mark{width:30px;height:30px;background:linear-gradient(135deg,var(--accent),var(--cyan));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.conn-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:20px;padding:3px 10px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green);flex-shrink:0}
+.dot.warn{background:var(--yellow);box-shadow:0 0 5px var(--yellow)}
+.dot.err{background:var(--red);box-shadow:0 0 5px var(--red)}
+.warn-badge{font-size:11px;color:var(--yellow);display:flex;align-items:center;gap:5px;cursor:pointer;padding:4px 10px;border-radius:20px;border:1px solid rgba(234,179,8,.25);background:rgba(234,179,8,.07)}
 
-    .stats-bar { display: flex; gap: 6px; }
-    .stat-chip {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 4px 12px; font-size: .77rem; color: var(--muted);
-    }
-    .stat-chip strong { color: var(--text); }
+/* ‚îÄ‚îÄ BUTTONS ‚îÄ‚îÄ */
+.btn{border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;border-radius:var(--rs);padding:7px 14px;transition:all .15s;display:inline-flex;align-items:center;gap:6px;line-height:1}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#4a5be6;transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,108,249,.35)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--card);color:var(--text)}
+.btn-ok{background:rgba(34,197,94,.14);color:var(--green);border:1px solid rgba(34,197,94,.28)}
+.btn-ok:hover{background:rgba(34,197,94,.24)}
+.btn-del{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.22)}
+.btn-del:hover{background:rgba(239,68,68,.2)}
+.btn-cyan{background:rgba(6,182,212,.12);color:var(--cyan);border:1px solid rgba(6,182,212,.25)}
+.btn-cyan:hover{background:rgba(6,182,212,.22)}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 
-    /* ── DB status ── */
-    #dbStatus {
-      display: flex; align-items: center; gap: 6px;
-      font-size: .75rem; color: var(--muted);
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 4px 12px;
-    }
-    #dbDot {
-      width: 7px; height: 7px; border-radius: 50%;
-      background: #555; transition: background .3s;
-    }
-    #dbDot.ok  { background: #22c55e; }
-    #dbDot.err { background: #ef4444; }
-    #dbDot.loading { background: #f59e0b; animation: pulse 1s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+/* ‚îÄ‚îÄ STATS ‚îÄ‚îÄ */
+.stats{display:flex;gap:12px;padding:16px 24px;background:var(--surface);border-bottom:1px solid var(--border)}
+.stat{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;min-width:0;transition:border-color .2s}
+.stat:hover{border-color:var(--subtle)}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;font-weight:700}
+.stat-val{font-size:28px;font-weight:800;margin-top:4px;line-height:1;letter-spacing:-1px}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
 
-    /* ── Buttons ── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer;
-      font-size: .84rem; font-weight: 600; transition: opacity .15s, transform .1s;
-    }
-    .btn:hover { opacity: .88; transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); }
-    .btn-primary { background: var(--accent); color: #fff; }
-    .btn-ghost   { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+/* ‚îÄ‚îÄ ACTION BAR ‚îÄ‚îÄ */
+.abar{padding:10px 24px;display:flex;align-items:center;gap:10px;background:var(--surface);border-bottom:1px solid var(--border)}
+.sep{width:1px;height:22px;background:var(--border)}
+.tgl-grp{display:flex;align-items:center;gap:7px}
+.tgl-lbl{font-size:12px;color:var(--muted);white-space:nowrap}
+.tgl{position:relative;width:34px;height:19px;flex-shrink:0}
+.tgl input{display:none}
+.tgl-sl{position:absolute;inset:0;background:var(--dim);border-radius:20px;cursor:pointer;transition:.2s}
+.tgl-sl::after{content:'';position:absolute;width:13px;height:13px;background:#fff;border-radius:50%;left:3px;top:3px;transition:.2s}
+.tgl input:checked+.tgl-sl{background:var(--accent)}
+.tgl input:checked+.tgl-sl::after{transform:translateX(15px)}
+.abar-right{margin-left:auto;font-size:11px;color:var(--faint)}
 
-    /* ── Search ── */
-    .search-wrap { position: relative; }
-    .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-    #search {
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); border-radius: 8px; padding: 7px 12px 7px 34px;
-      font-size: .84rem; width: 190px; outline: none; transition: border-color .2s;
-    }
-    #search:focus { border-color: var(--accent); }
+/* ‚îÄ‚îÄ KANBAN ‚îÄ‚îÄ */
+.kb-wrap{overflow-x:auto;padding:20px 24px;min-height:calc(100vh - 210px)}
+.kb-board{display:flex;gap:14px;min-width:max-content;align-items:flex-start}
+.col{width:256px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;max-height:calc(100vh - 230px)}
+.col-hdr{padding:11px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;border-radius:var(--r) var(--r) 0 0}
+.col-title{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.col-cnt{background:var(--dim);color:var(--muted);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.col-cards{padding:9px;display:flex;flex-direction:column;gap:7px;overflow-y:auto;flex:1}
+.col-cards.over{background:var(--accent-glow);border-radius:0 0 var(--r) var(--r)}
+.empty-col{text-align:center;padding:24px 8px;color:var(--faint);font-size:12px}
+.empty-col .ei{font-size:22px;margin-bottom:6px;opacity:.35}
 
-    /* ── Board ── */
-    #board {
-      display: flex; gap: 14px; padding: 20px 22px;
-      overflow-x: auto; min-height: calc(100vh - 62px);
-      align-items: flex-start;
-    }
+/* ‚îÄ‚îÄ CARD ‚îÄ‚îÄ */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:11px;cursor:pointer;transition:all .14s;user-select:none}
+.card:hover{background:var(--card-h);border-color:var(--subtle);transform:translateY(-1px);box-shadow:0 4px 18px rgba(0,0,0,.35)}
+.card.dragging{opacity:.45;cursor:grabbing}
+.card[draggable="true"]{cursor:grab}
+.c-name{font-size:13px;font-weight:600;margin-bottom:6px;line-height:1.35}
+.c-meta{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;white-space:nowrap;max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.c-email{font-size:11px;color:var(--muted);margin-bottom:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-preview{font-size:11px;color:var(--muted);background:var(--surface);border-radius:4px;padding:5px 8px;margin-bottom:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.55;border-left:2px solid var(--faint)}
+.c-reply{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:4px;padding:5px 8px;font-size:11px;color:#a3e6b8;margin-bottom:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.c-actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:2px}
+.fu-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer;padding:3px 0}
+.fu-row.on{color:var(--cyan)}
+.fu-row:hover{color:var(--text)}
 
-    /* ── Column ── */
-    .column {
-      flex: 0 0 258px; background: var(--surface);
-      border-radius: var(--radius); border: 1px solid var(--border);
-      display: flex; flex-direction: column; max-height: calc(100vh - 102px);
-    }
-    .col-header {
-      padding: 13px 13px 9px;
-      display: flex; align-items: center; gap: 8px;
-      border-bottom: 1px solid var(--border);
-    }
-    .col-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .col-title { font-size: .86rem; font-weight: 700; flex: 1; }
-    .col-count {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 1px 9px; font-size: .72rem; color: var(--muted);
-    }
-    .col-body {
-      padding: 9px 9px 5px; overflow-y: auto; flex: 1;
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .col-body::-webkit-scrollbar { width: 4px; }
-    .col-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    .col-add { padding: 7px 9px 11px; }
-    .col-add button {
-      width: 100%; background: transparent; border: 1px dashed var(--border);
-      color: var(--muted); border-radius: 8px; padding: 7px;
-      cursor: pointer; font-size: .79rem; transition: all .15s;
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-    }
-    .col-add button:hover { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,.05); }
+/* ‚îÄ‚îÄ ACTIVITY PANEL ‚îÄ‚îÄ */
+.act-panel{width:272px;min-width:272px;background:var(--surface);border-left:1px solid var(--border);height:calc(100vh - 54px);overflow-y:auto;padding:16px;position:fixed;right:0;top:54px;transform:translateX(100%);transition:transform .25s;z-index:90}
+.act-panel.open{transform:translateX(0)}
+.act-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.act-item{padding:8px 0;border-bottom:1px solid var(--border)}
+.act-item:last-child{border-bottom:none}
+.act-time{font-size:10px;color:var(--muted)}
+.act-msg{font-size:12px;line-height:1.45;margin-top:2px}
 
-    /* ── Card ── */
-    .card {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px; cursor: grab;
-      transition: box-shadow .15s, transform .15s, border-color .15s;
-    }
-    .card:active { cursor: grabbing; }
-    .card:hover  { box-shadow: var(--shadow); border-color: var(--accent); transform: translateY(-1px); }
-    .card.dragging { opacity: .4; transform: rotate(1.5deg) scale(.97); }
+/* ‚îÄ‚îÄ MODALS ‚îÄ‚îÄ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.overlay.hidden{display:none}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:14px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal-lg{max-width:700px}
+.modal-sm{max-width:420px}
+.m-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.m-title{font-size:17px;font-weight:700}
+.m-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;padding:4px;line-height:1;border-radius:4px}
+.m-close:hover{color:var(--text);background:var(--dim)}
 
-    .card-top { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 8px; }
-    .card-thumb {
-      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: .84rem; font-weight: 700; overflow: hidden;
-    }
-    .card-info { flex: 1; min-width: 0; }
-    .card-name { font-size: .86rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-url  { font-size: .72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card-url a { color: var(--muted); text-decoration: none; }
-    .card-url a:hover { color: var(--accent); }
+/* ‚îÄ‚îÄ TABS ‚îÄ‚îÄ */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:18px;gap:4px}
+.tab{padding:8px 14px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.15s;border-radius:var(--rs) var(--rs) 0 0}
+.tab:hover{color:var(--text);background:var(--surface)}
+.tab.on{color:var(--text);border-bottom-color:var(--accent);background:var(--surface)}
 
-    .card-actions { display: flex; gap: 4px; opacity: 0; transition: opacity .15s; }
-    .card:hover .card-actions { opacity: 1; }
-    .card-actions button {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 6px; width: 26px; height: 26px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center; font-size: .74rem;
-      color: var(--muted); transition: all .15s;
-    }
-    .card-actions button:hover { border-color: var(--accent); color: var(--accent); }
+/* ‚îÄ‚îÄ FORM ‚îÄ‚îÄ */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.field input,.field textarea,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:var(--font);font-size:13px;padding:8px 11px;outline:none;resize:vertical;transition:border-color .15s}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.field textarea{min-height:100px;line-height:1.6}
+.field textarea.big{min-height:220px;font-size:12px;font-family:monospace}
+.field select option{background:var(--card)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-    .card-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
-    .badge { border-radius: 20px; padding: 2px 9px; font-size: .69rem; font-weight: 600; border: 1px solid transparent; }
-    .badge-niche      { background: rgba(108,99,255,.15); color: #a78bfa; border-color: rgba(168,139,250,.2); }
-    .badge-subs       { background: rgba(6,182,212,.1);   color: #22d3ee; border-color: rgba(6,182,212,.2); }
-    .badge-prio-alta  { background: rgba(239,68,68,.12);  color: #f87171; border-color: rgba(239,68,68,.2); }
-    .badge-prio-media { background: rgba(245,158,11,.12); color: #fbbf24; border-color: rgba(245,158,11,.2); }
-    .badge-prio-baixa { background: rgba(34,197,94,.1);   color: #4ade80; border-color: rgba(34,197,94,.2); }
+/* ‚îÄ‚îÄ PROGRESS ‚îÄ‚îÄ */
+.prog-bar{height:6px;background:var(--dim);border-radius:3px;overflow:hidden;margin:12px 0}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));border-radius:3px;transition:width .5s}
 
-    .card-notes {
-      margin-top: 8px; font-size: .74rem; color: var(--muted);
-      border-top: 1px solid var(--border); padding-top: 7px; line-height: 1.4;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
+/* ‚îÄ‚îÄ SPINNER ‚îÄ‚îÄ */
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .6s linear infinite;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
 
-    /* ── Card Script ── */
-    .card-script { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
-    .card-script-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-    .card-script-label { font-size: .67rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .6px; }
-    .card-script-copy {
-      background: transparent; border: 1px solid var(--border);
-      border-radius: 5px; padding: 2px 8px; font-size: .69rem;
-      color: var(--muted); cursor: pointer; transition: all .15s;
-      display: flex; align-items: center; gap: 3px; font-family: inherit;
-    }
-    .card-script-copy:hover  { border-color: var(--accent); color: var(--accent); background: rgba(108,99,255,.05); }
-    .card-script-copy.copied { border-color: #22c55e; color: #4ade80; background: rgba(34,197,94,.08); }
-    .card-script-text {
-      font-size: .72rem; color: var(--muted); line-height: 1.55; white-space: pre-wrap;
-      display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .card-script-expand { font-size: .67rem; color: var(--accent); cursor: pointer; margin-top: 3px; background: none; border: none; padding: 0; font-family: inherit; }
-    .card-script-expand:hover { text-decoration: underline; }
+/* ‚îÄ‚îÄ TOAST ‚îÄ‚îÄ */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--card);border:1px solid var(--border);border-radius:var(--rs);padding:10px 15px;font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.5);animation:ti .2s ease;display:flex;align-items:center;gap:8px;pointer-events:all;max-width:320px}
+.toast.ok{border-left:3px solid var(--green)}
+.toast.err{border-left:3px solid var(--red)}
+.toast.info{border-left:3px solid var(--accent)}
+@keyframes ti{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-    .card-date { margin-top: 8px; font-size: .69rem; color: var(--border); display: flex; align-items: center; gap: 4px; }
-
-    /* ── Drop placeholder ── */
-    .drop-placeholder { border: 2px dashed var(--accent); border-radius: 10px; min-height: 58px; background: rgba(108,99,255,.05); }
-
-    /* ── Empty state ── */
-    .empty-state { text-align: center; padding: 20px 10px; color: var(--muted); font-size: .79rem; line-height: 1.5; }
-    .empty-state span { font-size: 1.5rem; display: block; margin-bottom: 6px; opacity: .5; }
-
-    /* ── Modal ── */
-    .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,.65);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 999; backdrop-filter: blur(4px);
-      opacity: 0; pointer-events: none; transition: opacity .2s;
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 16px; width: min(560px, 95vw); padding: 26px;
-      box-shadow: var(--shadow); transform: translateY(16px); transition: transform .2s;
-      max-height: 90vh; overflow-y: auto;
-    }
-    .modal-overlay.open .modal { transform: translateY(0); }
-    .modal h2 { font-size: 1.05rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
-
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
-    .form-grid .full { grid-column: 1 / -1; }
-    .field label { display: block; font-size: .76rem; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
-    .field input, .field select, .field textarea {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text); border-radius: 8px; padding: 9px 12px;
-      font-size: .86rem; outline: none; transition: border-color .2s; font-family: inherit;
-    }
-    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); }
-    .field textarea { resize: vertical; min-height: 70px; }
-    .field textarea.script-area { min-height: 155px; font-size: .81rem; line-height: 1.6; }
-    .field select option { background: var(--surface2); }
-    .field-divider { grid-column: 1 / -1; border: none; border-top: 1px solid var(--border); margin: 2px 0; }
-
-    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
-
-    /* ── Toast ── */
-    #toast {
-      position: fixed; bottom: 22px; right: 22px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 10px; padding: 11px 17px;
-      font-size: .84rem; box-shadow: var(--shadow);
-      transform: translateY(80px); opacity: 0;
-      transition: all .3s; z-index: 9999;
-      display: flex; align-items: center; gap: 10px;
-    }
-    #toast.show { transform: translateY(0); opacity: 1; }
-    #toast.success .ti::before { content: '✅'; }
-    #toast.error   .ti::before { content: '❌'; }
-    #toast.info    .ti::before { content: 'ℹ️'; }
-
-    /* ── Loading overlay ── */
-    #loadingOverlay {
-      position: fixed; inset: 0; background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 14px; z-index: 9999; transition: opacity .4s;
-    }
-    #loadingOverlay.hide { opacity: 0; pointer-events: none; }
-    .spinner {
-      width: 36px; height: 36px; border-radius: 50%;
-      border: 3px solid var(--border); border-top-color: var(--accent);
-      animation: spin .8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    #loadingOverlay p { font-size: .9rem; color: var(--muted); }
-
-    ::-webkit-scrollbar { height: 6px; width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-  </style>
+/* ‚îÄ‚îÄ MISC ‚îÄ‚îÄ */
+hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+.flex{display:flex}.gap8{gap:8px}.f1{flex:1}.mt8{margin-top:8px}.mt16{margin-top:16px}
+.muted{color:var(--muted)}.small{font-size:12px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--dim);border-radius:3px}
+</style>
 </head>
 <body>
 
-<!-- ── LOADING ── -->
-<div id="loadingOverlay">
-  <div class="spinner"></div>
-  <p>Conectando ao banco de dados…</p>
-</div>
-
-<!-- ── HEADER ── -->
-<header>
-  <div class="logo">📺</div>
-  <h1>Prospecção <span>YouTube</span></h1>
-  <div class="header-right">
-    <div class="stats-bar" id="statsBar"></div>
-    <div id="dbStatus"><div id="dbDot" class="loading"></div><span id="dbLabel">Conectando…</span></div>
-    <div class="search-wrap">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <input id="search" type="text" placeholder="Buscar canal…" />
-    </div>
-    <button class="btn btn-primary" onclick="openModal()">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-      Adicionar Canal
-    </button>
+<!-- HEADER -->
+<header class="hdr">
+  <div class="logo">
+    <div class="logo-mark">üé¨</div>
+    WeMov Pro
+    <span style="font-weight:300;color:var(--muted);font-size:12px">/&nbsp;Prospec√ß√£o</span>
+  </div>
+  <div class="hdr-right">
+    <div id="warn-badge" class="warn-badge" onclick="openSettings('backend')" style="display:none">‚ö†Ô∏è Backend n√£o configurado</div>
+    <div class="conn-badge"><div class="dot" id="db-dot"></div><span id="db-txt">Conectando...</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="openActPanel()">üìã Feed</button>
+    <button class="btn btn-ghost btn-sm" onclick="openSettings('templates')">‚öôÔ∏è Config</button>
   </div>
 </header>
 
-<!-- ── BOARD ── -->
-<div id="board"></div>
+<!-- STATS -->
+<div class="stats" id="stats">
+  <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="s-total" style="color:var(--text)">‚Äì</div><div class="stat-sub">na pipeline</div></div>
+  <div class="stat"><div class="stat-lbl">Pendentes</div><div class="stat-val" id="s-pend" style="color:var(--yellow)">‚Äì</div><div class="stat-sub">aguardando aprova√ß√£o</div></div>
+  <div class="stat"><div class="stat-lbl">Emails Enviados</div><div class="stat-val" id="s-sent" style="color:var(--purple)">‚Äì</div><div class="stat-sub">acumulado</div></div>
+  <div class="stat"><div class="stat-lbl">Em Contato</div><div class="stat-val" id="s-reply" style="color:var(--green)">‚Äì</div><div class="stat-sub">responderam</div></div>
+  <div class="stat"><div class="stat-lbl">Follow-ups</div><div class="stat-val" id="s-fu" style="color:var(--cyan)">‚Äì</div><div class="stat-sub">ativos</div></div>
+</div>
 
-<!-- ── MODAL ── -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
-  <div class="modal">
-    <h2><span id="modalIcon">📺</span> <span id="modalTitle">Novo Canal</span></h2>
-    <input type="hidden" id="editId" />
-    <div class="form-grid">
-      <div class="field full">
-        <label>Nome do Canal *</label>
-        <input id="fName" type="text" placeholder="Ex: Canal do Empreendedor" />
+<!-- ACTION BAR -->
+<div class="abar">
+  <button class="btn btn-primary" id="btn-find" onclick="findLeads()">üîç Buscar Leads</button>
+  <button class="btn btn-ghost"  id="btn-send" onclick="sendEmails()">üìß Enviar Emails</button>
+  <div class="sep"></div>
+  <div class="tgl-grp">
+    <span class="tgl-lbl">Busca auto</span>
+    <label class="tgl"><input type="checkbox" id="tog-auto-find" onchange="saveToggles()"><span class="tgl-sl"></span></label>
+  </div>
+  <div class="tgl-grp">
+    <span class="tgl-lbl">Envio auto</span>
+    <label class="tgl"><input type="checkbox" id="tog-auto-send" onchange="saveToggles()"><span class="tgl-sl"></span></label>
+  </div>
+  <div class="sep"></div>
+  <button class="btn btn-ghost btn-sm" onclick="loadAll()">‚Ü∫</button>
+  <div class="abar-right" id="last-upd">‚Äì</div>
+</div>
+
+<!-- KANBAN -->
+<div class="kb-wrap"><div class="kb-board" id="board"></div></div>
+
+<!-- ACTIVITY PANEL -->
+<div class="act-panel" id="act-panel">
+  <div class="act-hdr">
+    <div style="font-size:13px;font-weight:700">Atividade</div>
+    <button class="btn btn-ghost btn-sm" onclick="closeActPanel()">‚úï</button>
+  </div>
+  <div id="act-list"><div class="muted small" style="text-align:center;padding:20px">Sem atividade</div></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-wrap" id="toasts"></div>
+
+<!-- ===== MODAIS ===== -->
+
+<!-- Lead Modal -->
+<div class="overlay hidden" id="m-lead">
+  <div class="modal modal-lg">
+    <div class="m-hdr">
+      <div class="m-title" id="ml-title">‚Äì</div>
+      <button class="m-close" onclick="closeM('m-lead')">‚úï</button>
+    </div>
+    <div class="tabs">
+      <div class="tab on" id="lt-info"   onclick="leadTab('info')">Geral</div>
+      <div class="tab"    id="lt-script" onclick="leadTab('script')">Script</div>
+      <div class="tab"    id="lt-reply"  onclick="leadTab('reply')">Resposta</div>
+    </div>
+
+    <!-- Info -->
+    <div id="lc-info">
+      <div class="grid2">
+        <div class="field"><label>Canal</label><input id="l-name" type="text"></div>
+        <div class="field"><label>Email</label><input id="l-email" type="text"></div>
+        <div class="field"><label>Nicho</label><input id="l-niche" type="text"></div>
+        <div class="field"><label>Inscritos</label><input id="l-subs" type="text"></div>
+        <div class="field"><label>URL</label><input id="l-url" type="text"></div>
+        <div class="field"><label>Stage</label>
+          <select id="l-stage">
+            <option value="pendente">Pendente</option>
+            <option value="lead">Lead</option>
+            <option value="email_enviado">Email Enviado</option>
+            <option value="sample_video">Sample Video</option>
+            <option value="em_contato">Em Contato</option>
+            <option value="follow_up">Follow Up</option>
+            <option value="desistente">Desistente</option>
+          </select>
+        </div>
       </div>
-      <div class="field full">
-        <label>URL do Canal</label>
-        <input id="fUrl" type="url" placeholder="https://youtube.com/@canal" />
-      </div>
-      <div class="field">
-        <label>Nicho / Categoria</label>
-        <input id="fNiche" type="text" placeholder="Ex: Finanças, Tech, Lifestyle" />
-      </div>
-      <div class="field">
-        <label>Nº de Inscritos</label>
-        <input id="fSubs" type="text" placeholder="Ex: 120K" />
-      </div>
-      <div class="field">
-        <label>E-mail de Contato</label>
-        <input id="fEmail" type="email" placeholder="contato@email.com" />
-      </div>
-      <div class="field">
-        <label>Prioridade</label>
-        <select id="fPrio">
-          <option value="">— Selecione —</option>
-          <option value="alta">🔴 Alta</option>
-          <option value="media">🟡 Média</option>
-          <option value="baixa">🟢 Baixa</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Etapa</label>
-        <select id="fStage">
-          <option value="lead">Lead</option>
-          <option value="email">Email Enviado</option>
-          <option value="sample">Sample Video</option>
-          <option value="followup">Follow Up</option>
-          <option value="contact">Contato</option>
-          <option value="fechado">Fechado</option>
-          <option value="descartado">Descartado</option>
-        </select>
-      </div>
-      <div class="field full">
-        <label>Observações</label>
-        <textarea id="fNotes" placeholder="Anotações, detalhes do contato…"></textarea>
-      </div>
-      <hr class="field-divider" />
-      <div class="field full">
-        <label>✉️ Script de Prospecção</label>
-        <textarea id="fScript" class="script-area" placeholder="Escreva o script personalizado para este canal…"></textarea>
+      <div class="field"><label>Notas</label><textarea id="l-notes" placeholder="Observa√ß√µes..."></textarea></div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:14px">
+        <div class="flex gap8" style="align-items:center;justify-content:space-between">
+          <div>
+            <div style="font-size:13px;font-weight:600">Follow-up autom√°tico</div>
+            <div class="small muted mt8" id="fu-desc">Desativado</div>
+          </div>
+          <label class="tgl"><input type="checkbox" id="l-fu" onchange="onFuToggle()"><span class="tgl-sl"></span></label>
+        </div>
       </div>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="saveBtn" onclick="saveCardModal()">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
-        Salvar
-      </button>
+
+    <!-- Script -->
+    <div id="lc-script" style="display:none">
+      <div class="field"><label>Script de Email</label><textarea class="big" id="l-script"></textarea></div>
+    </div>
+
+    <!-- Reply -->
+    <div id="lc-reply" style="display:none">
+      <div id="reply-area"><div style="text-align:center;padding:30px;color:var(--muted)">Nenhuma resposta detectada ainda.<br><span class="small">O backend verifica respostas automaticamente.</span></div></div>
+    </div>
+
+    <hr>
+    <div class="flex gap8">
+      <button class="btn btn-primary f1" onclick="saveLead()">üíæ Salvar</button>
+      <button class="btn btn-ghost" onclick="closeM('m-lead')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- ── TOAST ── -->
-<div id="toast"><span class="ti"></span><span id="toastMsg"></span></div>
+<!-- Settings Modal -->
+<div class="overlay hidden" id="m-cfg">
+  <div class="modal modal-lg">
+    <div class="m-hdr">
+      <div class="m-title">‚öôÔ∏è Configura√ß√µes</div>
+      <button class="m-close" onclick="closeM('m-cfg')">‚úï</button>
+    </div>
+    <div class="tabs">
+      <div class="tab on" id="st-tpl"     onclick="cfgTab('tpl')">Templates</div>
+      <div class="tab"    id="st-backend" onclick="cfgTab('backend')">Backend</div>
+      <div class="tab"    id="st-search"  onclick="cfgTab('search')">Busca</div>
+    </div>
+
+    <div id="sc-tpl">
+      <div class="field">
+        <label>Template ‚Äî 1¬∫ Contato</label>
+        <textarea class="big" id="tpl1" style="min-height:200px"></textarea>
+      </div>
+      <div class="field">
+        <label>Template ‚Äî Follow-up</label>
+        <textarea class="big" id="tpl2" style="min-height:180px"></textarea>
+      </div>
+      <div class="small muted">Vari√°veis: <code>{first_name}</code> <code>{channel_name}</code> <code>{niche}</code> <code>{sender}</code></div>
+    </div>
+
+    <div id="sc-backend" style="display:none">
+      <div class="field">
+        <label>URL do Backend (Render.com)</label>
+        <input type="url" id="cfg-url" placeholder="https://seu-app.onrender.com">
+      </div>
+      <div class="small muted" style="margin:-8px 0 14px">Preencha ap√≥s o deploy no Render.com. Necess√°rio para "Buscar Leads" e "Enviar Emails".</div>
+      <button class="btn btn-ghost btn-sm" onclick="testBackend()">üîå Testar conex√£o</button>
+    </div>
+
+    <div id="sc-search" style="display:none">
+      <div class="grid2">
+        <div class="field"><label>Inscritos m√≠nimos</label><input type="number" id="cfg-smin" value="15000"></div>
+        <div class="field"><label>Inscritos m√°ximos</label><input type="number" id="cfg-smax" value="100000"></div>
+      </div>
+      <div class="field"><label>Dias at√© o follow-up (quando ativado)</label><input type="number" id="cfg-fudays" value="3"></div>
+    </div>
+
+    <hr>
+    <div class="flex gap8">
+      <button class="btn btn-primary f1" onclick="saveSettings()">üíæ Salvar</button>
+      <button class="btn btn-ghost" onclick="closeM('m-cfg')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Progress Modal -->
+<div class="overlay hidden" id="m-prog">
+  <div class="modal modal-sm">
+    <div class="m-hdr" style="margin-bottom:14px">
+      <div class="m-title">üîç Buscando Leads</div>
+    </div>
+    <div id="prog-msg" class="small muted" style="margin-bottom:10px">Iniciando...</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="small muted mt8"><span id="prog-found">0</span> leads encontrados</div>
+    <div class="flex gap8 mt16">
+      <button class="btn btn-del btn-sm" onclick="cancelFind()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="overlay hidden" id="m-confirm">
+  <div class="modal modal-sm">
+    <div class="m-hdr">
+      <div class="m-title" id="conf-title">Confirmar</div>
+      <button class="m-close" onclick="closeM('m-confirm')">‚úï</button>
+    </div>
+    <div id="conf-msg" class="small muted" style="margin-bottom:20px">‚Äì</div>
+    <div class="flex gap8">
+      <button class="btn btn-primary f1" id="conf-ok">Confirmar</button>
+      <button class="btn btn-ghost" onclick="closeM('m-confirm')">Cancelar</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════
-//  ⚙️  CONFIGURAÇÃO — troque pelos seus valores
-// ═══════════════════════════════════════════
-const SUPABASE_URL      = 'https://jegccnxuzzyqmhfenhni.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZ2Njbnh1enp5cW1oZmVuaG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzcyNTUsImV4cCI6MjA5NTMxMzI1NX0.0QftXiHF3qbbDkwTqgwElz2-PgW5jMz7EbS7tkFXHAA';
-// ═══════════════════════════════════════════
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// CONFIG
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+const SB_URL = 'https://jegccnxuzzyqmhfenhni.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZ2Njbnh1enp5cW1oZmVuaG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzcyNTUsImV4cCI6MjA5NTMxMzI1NX0.0QftXiHF3qbbDkwTqgwElz2-PgW5jMz7EbS7tkFXHAA';
 
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// ─────────────────────────────────────────
-//  STAGES
-// ─────────────────────────────────────────
 const STAGES = [
-  { id: 'lead',       label: 'Lead',          color: '#4e7cff', icon: '🎯' },
-  { id: 'email',      label: 'Email Enviado', color: '#a78bfa', icon: '📧' },
-  { id: 'sample',     label: 'Sample Video',  color: '#f59e0b', icon: '🎬' },
-  { id: 'followup',   label: 'Follow Up',     color: '#06b6d4', icon: '🔁' },
-  { id: 'contact',    label: 'Contato',       color: '#10b981', icon: '📞' },
-  { id: 'fechado',    label: 'Fechado',       color: '#22c55e', icon: '✅' },
-  { id: 'descartado', label: 'Descartado',    color: '#ef4444', icon: '🗑️' },
+  { id:'pendente',      label:'Pendente',      color:'#eab308', icon:'‚è≥' },
+  { id:'lead',          label:'Lead',           color:'#5b6cf9', icon:'üéØ' },
+  { id:'email_enviado', label:'Email Enviado',  color:'#a855f7', icon:'üìß' },
+  { id:'sample_video',  label:'Sample Video',   color:'#f97316', icon:'üé¨' },
+  { id:'em_contato',    label:'Em Contato',     color:'#22c55e', icon:'üí¨' },
+  { id:'follow_up',     label:'Follow Up',      color:'#06b6d4', icon:'üîÑ' },
+  { id:'desistente',    label:'Desistente',     color:'#6b7280', icon:'‚ùå' },
 ];
 
-// ─────────────────────────────────────────
-//  SEED DATA  (inserido apenas se o banco estiver vazio)
-// ─────────────────────────────────────────
-const SEEDS = [
-  { id:'seed_001', created: 1748000000000, name:'Fearless Over 50', url:'https://www.youtube.com/@FearlessOver50official', niche:'Mulheres 50+', subs:'', email:'', prio:'media', stage:'lead', notes:'Canal focado em empoderamento e estilo de vida para mulheres acima dos 50 anos.', script:`Hey,\n\nI came across your channel and I love the energy you bring to life after 50 — really refreshing content.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and stronger hooks in the first few seconds to pull more viewers in from the start.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_002', created: 1748000001000, name:'Renee Michelle', url:'https://www.youtube.com/@ReneeMichelle_', niche:'Lifestyle / Beauty', subs:'', email:'', prio:'media', stage:'lead', notes:'Criadora de conteúdo de lifestyle e beleza.', script:`Hey Renee,\n\nI've been watching your content — you have a really natural on-camera presence and a great aesthetic going on.\n\nI edited one of your videos as a sample to show you what it'd look like with smoother cuts and a more polished visual rhythm to match the vibe you're building.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_003', created: 1748000002000, name:'Kate Hartley', url:'https://www.youtube.com/@katehartleyuk', niche:'Menopausa / Wellness', subs:'', email:'kate@thekatehartley.com', prio:'alta', stage:'lead', notes:'Coach de saúde feminina — Menopause Monday, saúde intestinal, bem-estar na meia-idade.', script:`Hey Kate,\n\nI've been watching your Menopause Monday videos — the way you break down such complex topics for women is genuinely helpful, and I can tell your audience really trusts you.\n\nI edited one of your videos as a sample to show you what it'd look like with a tighter structure and a stronger hook at the top to keep viewers watching longer.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_004', created: 1748000003000, name:'Magnetic Founders', url:'https://www.youtube.com/@magneticfounders', niche:'Empreendedorismo / Skool', subs:'', email:'', prio:'alta', stage:'lead', notes:'Dr. Stephen Buscema & Jamie Kullman. Memberships no Skool, estratégias 1-para-muitos.', script:`Hey,\n\nI've been watching your content on building Skool memberships — the value you pack into each video is genuinely impressive.\n\nI edited one of your videos as a sample to show you what it'd look like with sharper pacing and a stronger hook in the first 30 seconds to boost retention on your educational content.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_005', created: 1748000004000, name:'Holy Schmidt!', url:'https://www.youtube.com/@HolySchmidt', niche:'Finanças / Aposentadoria', subs:'450000', email:'', prio:'alta', stage:'lead', notes:'450K subs, 74M views. Canal financeiro focado em aposentadoria, gestão de patrimônio.', script:`Hey,\n\nI've been watching your channel — you break down retirement and personal finance in a way that actually makes sense to people, which is genuinely rare.\n\nI edited one of your videos as a sample to show you what it'd look like with more dynamic pacing and stronger visual cues to keep your audience engaged through the deeper explanations.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_006', created: 1748000005000, name:'Monica Razak', url:'https://www.youtube.com/@monicarazak', niche:'DIY / Side Hustle / Lifestyle', subs:'', email:'girliemonicarazak@influint.co', prio:'media', stage:'lead', notes:'"Crafty, thrifty, entrepreneurial girlie" — largou o 9-5 para perseguir sonhos criativos.', script:`Hey Monica,\n\nI came across your channel and love the energy — the crafty, entrepreneurial girlie vibe really comes through in your videos.\n\nI edited one of your videos as a sample to show you what it'd look like with snappier cuts and a stronger hook up front to grab people in those first few seconds.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_007', created: 1748000006000, name:'Alex Costa — Behind the Business', url:'https://www.youtube.com/@alexcostaverified', niche:'Business / Creator Life', subs:'4100000', email:'team@alexcostamedia.com', prio:'alta', stage:'lead', notes:'Canal BTS do Alex Costa (4.1M no principal). Raw reality de construir negócio em NYC. Fundador do Forte Series.', script:`Hey Alex,\n\nI've been watching Behind the Business — the raw, no-script approach you take is a refreshing break from the usual polished creator content.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and a stronger narrative flow to make each episode hit even harder.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_008', created: 1748000007000, name:'Life with Dylan', url:'https://www.youtube.com/@lifewithdylan', niche:'Lifestyle / London Vlogs', subs:'', email:'idylanrf@gmail.com', prio:'media', stage:'lead', notes:'Dylan — baseado em Londres. Vlogs domingo + guias de vida quinta. Economia & Finanças + Acting.', script:`Hey Dylan,\n\nI've been watching your London vlogs — you have a really genuine storytelling style that makes everything feel personal and relatable.\n\nI edited one of your videos as a sample to show you what it'd look like with smoother transitions and more cinematic cuts to elevate the visual experience.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_009', created: 1748000008000, name:'Personal Finance with Leila', url:'https://www.youtube.com/@personalfinancewithleila', niche:'Finanças / Dívidas', subs:'', email:'contact@debtoverit.com', prio:'alta', stage:'lead', notes:'Marca "Debt Over It". Ajuda pessoas a quitarem dívidas e ter confiança financeira.', script:`Hey Leila,\n\nI've been watching your channel — the way you turn something as stressful as debt into a journey people actually want to follow is genuinely impressive.\n\nI edited one of your videos as a sample to show you what it'd look like with cleaner pacing and a stronger hook at the top to keep viewers watching through the full breakdown.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_010', created: 1748000009000, name:'Your Financial Journey', url:'https://www.youtube.com/@yourfinancialjourney', niche:'Finanças / Investimentos', subs:'', email:'ginnyavolio@gmail.com', prio:'media', stage:'lead', notes:'Ginny Avolio — educação financeira, poupança, investimentos, renda passiva e side hustles.', script:`Hey Ginny,\n\nI've been watching your channel — I really like how you break down financial literacy in a way that feels accessible and genuinely encouraging.\n\nI edited one of your videos as a sample to show you what it'd look like with sharper pacing and stronger visual cues to keep your audience engaged all the way through.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_011', created: 1748000010000, name:'Melisa Gibbs', url:'https://www.youtube.com/@melisagibbs', niche:'Mom Life / Health / Lifestyle', subs:'', email:'melisawgibbs@gmail.com', prio:'media', stage:'lead', notes:'Health Coach (Herbalife), mãe de 4+1. Receitas, vlog familiar, empreendedorismo feminino.', script:`Hey Melisa,\n\nI've been watching your channel — the way you balance mom life, health coaching, and entrepreneurship all in one place makes for really compelling content.\n\nI edited one of your videos as a sample to show you what it'd look like with a more dynamic flow and a stronger opening to hook viewers right from the start.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_012', created: 1748000011000, name:'Ok So Thats Mercedes', url:'https://www.youtube.com/@oksothatsmercedes', niche:'Girl Talks / Hauls / Lifestyle', subs:'', email:'info@crownedbymercedes.com', prio:'media', stage:'lead', notes:'Mercedes — girl talks, try-on hauls e vlogs. Marca: Crowned by Mercedes.', script:`Hey Mercedes,\n\nI came across your channel and love the vibe — the girl talk energy and authentic haul content really stands out.\n\nI edited one of your videos as a sample to show you what it'd look like with smoother cuts and a more polished visual rhythm that matches your brand aesthetic.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_013', created: 1748000012000, name:'Rick Gannon', url:'https://www.youtube.com/@therickgannon', niche:'Imóveis / Property UK', subs:'30000', email:'Rick@newerapropertysolutions.co.uk', prio:'alta', stage:'lead', notes:'~30K subs. Investimento imobiliário no Reino Unido — landlord, compra de imóveis, gestão de inquilinos. Canal há 15 anos.', script:`Hey Rick,\n\nI've been watching your channel — the no-nonsense, real-world approach to property investing is exactly what the niche needs more of.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and stronger chapter-style cuts to keep viewers engaged through the longer deep dives.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_014', created: 1748000013000, name:'Personal Development With Di', url:'https://www.youtube.com/@personaldevelopmentwithdi', niche:'Desenvolvimento Pessoal', subs:'', email:'power.within12345@gmail.com', prio:'media', stage:'lead', notes:'Canal de desenvolvimento pessoal — mindset, produtividade, autoconhecimento.', script:`Hey Di,\n\nI came across your channel and really connected with the personal development angle — helping people unlock their potential is powerful content.\n\nI edited one of your videos as a sample to show you what it'd look like with a stronger hook at the top and cleaner pacing to keep viewers engaged throughout.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_015', created: 1748000014000, name:'The Lodge Guys', url:'https://www.youtube.com/@thelodgeguys', niche:'Lifestyle / Travel / Vlogs', subs:'29700', email:'contact@thelodgeguys.com', prio:'media', stage:'lead', notes:'Leigh & Nick — casal UK, lodge na costa leste da Inglaterra. Viagens, Disney, comida. ~30K subs, 15M views.', script:`Hey Leigh & Nick,\n\nI've been watching your channel — the authentic, everyday energy you both bring to your vlogs is exactly what makes people keep coming back.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and more cinematic cuts to make each adventure feel even more immersive.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_016', created: 1748000015000, name:'Solo Cruise & Travel', url:'https://www.youtube.com/@solocruisetravel', niche:'Viagem / Cruzeiros Solo', subs:'', email:'solocruisercontact@gmail.com', prio:'media', stage:'lead', notes:'Canal de cruzeiros para viajantes solo — dicas, vlogs de bordo e guias práticos.', script:`Hey,\n\nI came across your channel and love the niche — solo cruising content is genuinely underserved and you're filling that gap really well.\n\nI edited one of your videos as a sample to show you what it'd look like with smoother transitions and a stronger opening that drops viewers right into the experience.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_017', created: 1748000016000, name:'Cheyche', url:'https://www.youtube.com/@cheyche', niche:'Lifestyle', subs:'', email:'chethya.a.business@gmail.com', prio:'media', stage:'lead', notes:'Canal de lifestyle.', script:`Hey,\n\nI came across your channel and really liked the vibe you've built — there's a natural, relatable quality to your content that stands out.\n\nI edited one of your videos as a sample to show you what it'd look like with snappier cuts and a stronger hook right at the top to pull viewers in immediately.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_018', created: 1748000017000, name:'GH Tech Review', url:'https://www.youtube.com/@ghtechreview', niche:'Tech Reviews', subs:'', email:'gerardo@ghtechreview.com', prio:'alta', stage:'lead', notes:'Gerardo Hernandez — Califórnia. Reviews honestos de smartphones, laptops, gaming gear. Produz solo há 5+ anos.', script:`Hey Gerardo,\n\nI've been watching your channel — the honest, no-fluff approach to tech reviews really comes through, and the production quality shows how much you care about the content.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and sharper B-roll cuts to make the product showcases hit even harder.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_019', created: 1748000018000, name:'ReviewTechUSA2', url:'https://www.youtube.com/@reviewtechusartu', niche:'Gaming / Tech News', subs:'', email:'rtuadvertisingyt@gmail.com', prio:'alta', stage:'lead', notes:'Richard Masucci — canal revival (1M+ subs no original). Gaming news: Xbox, PlayStation, Nintendo. Livestreams regulares.', script:`Hey Rich,\n\nI've been watching the channel — the direct, opinionated take on gaming news is a big part of what makes your content stand out from the usual coverage.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter cuts and stronger visual pacing to keep the energy up through the whole video.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_020', created: 1748000019000, name:'Lucinda Strafford', url:'https://www.youtube.com/@lucindastrafford', niche:'Lifestyle / Beauty / Vlogs', subs:'', email:'lucinda@offlimitsgroup.com', prio:'alta', stage:'lead', notes:'Ex-Love Island UK (2021). 1M+ Instagram, 1.3M TikTok. Day-in-the-life vlogs, makeup e lifestyle.', script:`Hey Lucinda,\n\nI've been watching your channel — the day-in-the-life format you do is really engaging, and you have a natural energy on camera that keeps people watching.\n\nI edited one of your videos as a sample to show you what it'd look like with a more polished edit — cleaner cuts, stronger pacing and a hook that matches the aesthetic you've built across your platforms.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_021', created: 1748000020000, name:'Crypto Investor', url:'https://www.youtube.com/@cryptoinvestorofficial', niche:'Crypto / Altcoins / NFTs', subs:'', email:'collab@ytranker.net', prio:'media', stage:'lead', notes:'Educação crypto — tendências, NFTs, exchanges, altcoins. Via agência YTRanker.', script:`Hey,\n\nI've been watching your channel — you do a solid job making the crypto world feel approachable, especially for people just getting started.\n\nI edited one of your videos as a sample to show you what it'd look like with sharper pacing and stronger visual cues to keep viewers locked in through the more technical breakdowns.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_022', created: 1748000021000, name:'Bitcoin Trading Challenge', url:'https://www.youtube.com/@bitcointradingchallenge3861', niche:'Bitcoin / Crypto Trading', subs:'76000', email:'blsbear@gmail.com', prio:'alta', stage:'lead', notes:'~76K subs. Análise técnica, fundamental e de sentimento crypto. Day trading desde 2017.', script:`Hey,\n\nI've been watching your channel — the depth you bring to technical and sentiment analysis is genuinely rare in the crypto space.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and clearer visual breakdowns to make the charts and analysis easier to follow for your audience.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_023', created: 1748000022000, name:'The Bitcoin Layer', url:'https://www.youtube.com/@thebitcoinlayer', niche:'Bitcoin / Macro', subs:'', email:'thebitcoinlayer@zbd.gg', prio:'alta', stage:'lead', notes:'Canal focado em Bitcoin e análise macro — conteúdo aprofundado do ecossistema Bitcoin.', script:`Hey,\n\nI've been watching your channel — the macro lens you bring to Bitcoin analysis sets you apart from the typical crypto content out there.\n\nI edited one of your videos as a sample to show you what it'd look like with a more dynamic structure and stronger visual pacing to match the depth of the insights you're delivering.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_024', created: 1748000023000, name:'Manuel Wagner', url:'https://www.youtube.com/@manuweb3', niche:'Web3 / DeFi / Crypto (DE)', subs:'', email:'info@web3universe.de', prio:'alta', stage:'lead', notes:'Fundador do Web3 Universe (Alemanha). DeFi, análise crypto, guias passo-a-passo. Comunidade de +1000 investidores.', script:`Hey Manuel,\n\nI've been watching your channel — the step-by-step approach you bring to Web3 and DeFi makes complex strategies genuinely accessible, which is hard to do well.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and stronger visual structure to make each breakdown land even more clearly.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_025', created: 1748000024000, name:'Maria Lucey — Dietitian', url:'https://www.youtube.com/@marialuceyrd_dietitian', niche:'Nutrição / Saúde', subs:'45000', email:'info@marialuceyrd.com', prio:'alta', stage:'lead', notes:'Registered Dietitian da Irlanda. ~45K subs em 2 anos. Nutrição, receitas high protein. Email list de 6K.', script:`Hey Maria,\n\nI've been watching your channel — you have a really strong ability to turn complex nutrition topics into content people actually want to watch, which is genuinely rare for a dietitian.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and a stronger hook at the start to boost watch time and keep more viewers watching to the end.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_026', created: 1748000025000, name:'Stefanie Lugo', url:'https://www.youtube.com/@stefanielugo', niche:'Real Estate Coaching', subs:'', email:'Hello@StefanieLugo.com', prio:'alta', stage:'lead', notes:'Top 1% REALTORS. Coaching para agentes imobiliários EUA/Canadá. Market Authority Academy. 800+ agentes treinados.', script:`Hey Stefanie,\n\nI've been watching your channel — the actionable, no-fluff approach you bring to real estate business coaching is clearly resonating with your audience.\n\nI edited one of your videos as a sample to show you what it'd look like with snappier cuts and a stronger opening hook to pull in even more agents in those first few seconds.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_027', created: 1748000026000, name:'Sika Strength', url:'https://www.youtube.com/@sikastrength', niche:'Strength Training / Fitness', subs:'', email:'sikastrength@gmail.com', prio:'alta', stage:'lead', notes:'Levantamento olímpico e força para atletas de fitness. 123K Instagram. App: Sika Strength 2.0.', script:`Hey,\n\nI've been watching your channel — the quality of your strength programming content is clear, and there's a real community energy around what you're building.\n\nI edited one of your videos as a sample to show you what it'd look like with more dynamic cuts and stronger visual energy to match the intensity of the training you're covering.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_028', created: 1748000027000, name:'Tammy Kabell — Career Coach', url:'https://www.youtube.com/@tammykabell-crc', niche:'Carreira / Executive Jobs', subs:'', email:'AskMe@CRCAdvice.com', prio:'alta', stage:'lead', notes:'Fundadora do CRC. 20+ anos ajudando executivos 6-7 figures. Citada em WSJ, Bloomberg, NBC, Fox News.', script:`Hey Tammy,\n\nI've been watching your channel — the depth of expertise you bring to executive job search is genuinely hard to find, and it's clear your audience trusts your advice completely.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter pacing and a stronger hook up front to help more executives find you and stay watching.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_029', created: 1748000028000, name:'Rick Netshiozwi', url:'https://www.youtube.com/@ricknetshiozwi_official', niche:'Casamento / Relacionamentos', subs:'', email:'info@ricknetshiozwi.com', prio:'alta', stage:'lead', notes:'Marriage restoration specialist. 18+ anos. 1M+ seguidores em 102 países. "The Marriage Podcast".', script:`Hey Rick,\n\nI've been watching your channel — the way you handle sensitive marriage topics with both honesty and empathy is something very few people can pull off the way you do.\n\nI edited one of your videos as a sample to show you what it'd look like with cleaner pacing and a stronger opening that draws viewers in before they have a chance to click away.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_030', created: 1748000029000, name:'Harley Therapy', url:'https://www.youtube.com/@harleytherapy', niche:'Saúde Mental / Psicoterapia', subs:'39700', email:'help@harleytherapy.co.uk', prio:'alta', stage:'lead', notes:'~40K subs, canal desde 2009. Londres. CBT, EMDR, trauma, ansiedade, depressão, ADHD.', script:`Hey,\n\nI've been watching your channel — the clinical depth combined with genuinely accessible explanations is exactly what sets Harley Therapy apart in the mental health space.\n\nI edited one of your videos as a sample to show you what it'd look like with tighter structure and a stronger hook at the top to boost retention and help more people find the content they need.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-  { id:'seed_031', created: 1748000030000, name:'SamTheCoach', url:'https://www.youtube.com/@samthecoach', niche:'Business / Empreendedorismo Feminino', subs:'', email:'stepaheadbusinesscoaching@gmail.com', prio:'media', stage:'lead', notes:'Sam — coaching para mulheres empreendedoras. Monetização Instagram, TikTok, produtos digitais.', script:`Hey Sam,\n\nI've been watching your channel — the practical, women-first approach to building an online income is really clear in how you teach, and your audience genuinely connects with it.\n\nI edited one of your videos as a sample to show you what it'd look like with snappier pacing and a stronger hook to pull in more aspiring entrepreneurs right from the first seconds.\n\nWould you be open to taking a look?\nIf you like the direction, I'd love to talk about working together.\n\nBest,\nJoão` },
-];
+const TPL1 = `Subject: I already edited a video for your channel
 
-// ─────────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────────
-let cards = [];
-let dragCard = null;
-let searchQuery = '';
+Hey {first_name},
 
-// ─────────────────────────────────────────
-//  DB HELPERS
-// ─────────────────────────────────────────
-async function dbLoad() {
-  const { data, error } = await sb.from('channels').select('*').order('created', { ascending: true });
-  if (error) throw error;
-  return data || [];
-}
+I came across your channel while going through {niche} content on YouTube and your approach really stood out. The way you create is genuinely different from most people in the space.
 
-async function dbUpsert(card) {
-  const { error } = await sb.from('channels').upsert(card);
-  if (error) throw error;
-}
+I went ahead and put together a short edit of one of your recent videos. I wanted to show you something real instead of just pitching you cold.
 
-async function dbDelete(id) {
-  const { error } = await sb.from('channels').delete().eq('id', id);
-  if (error) throw error;
-}
+If you want to take a look, just reply and I will send it right over.
 
-function setDbStatus(state, label) {
-  const dot = document.getElementById('dbDot');
-  const lbl = document.getElementById('dbLabel');
-  dot.className = state;
-  lbl.textContent = label;
-}
+{sender}
+Video Editor`;
 
-// ─────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────
+const TPL2 = `Subject: Re: sample edit for your channel
+
+Hey {first_name},
+
+Just wanted to make sure my last email did not get buried in your inbox.
+
+I put together a sample edit for your channel and would love to show it to you. Takes just a few seconds to watch.
+
+If you are curious, just reply here and I will send it right away.
+
+{sender}
+Video Editor`;
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// STATE
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+const sb = supabase.createClient(SB_URL, SB_KEY);
+let leads = [], activity = [], cfg = {}, cur = null;
+let pollT = null, curLeadTab = 'info', curCfgTab = 'tpl';
+
+const backendUrl = () => cfg.backend_url || localStorage.getItem('bk_url') || '';
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// INIT
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 async function init() {
-  setDbStatus('loading', 'Conectando…');
   try {
-    cards = await dbLoad();
-    if (cards.length === 0) {
-      // First run — seed the database
-      setDbStatus('loading', 'Inserindo dados…');
-      const { error } = await sb.from('channels').insert(SEEDS);
-      if (error) throw error;
-      cards = [...SEEDS];
-    }
-    setDbStatus('ok', 'Conectado');
-  } catch (e) {
-    setDbStatus('err', 'Erro de conexão');
-    toast('Erro ao conectar ao banco. Verifique as credenciais.', 'error');
-    console.error(e);
+    await loadCfg();
+    await loadAll();
+    setDbStatus(true);
+    checkBk();
+    // Auto-refresh every 2 minutes
+    setInterval(loadAll, 120000);
+  } catch(e) {
+    setDbStatus(false);
+    toast('Erro Supabase: ' + e.message, 'err');
   }
-  document.getElementById('loadingOverlay').classList.add('hide');
+}
+
+function setDbStatus(ok) {
+  document.getElementById('db-dot').className = 'dot' + (ok ? '' : ' err');
+  document.getElementById('db-txt').textContent = ok ? 'Conectado' : 'Erro';
+}
+
+function checkBk() {
+  document.getElementById('warn-badge').style.display = backendUrl() ? 'none' : 'flex';
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// DATA
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+async function loadAll() {
+  const [l, a] = await Promise.all([
+    sb.from('channels').select('*').order('created', { ascending: false }),
+    sb.from('activity_log').select('*').order('created_at', { ascending: false }).limit(60)
+  ]);
+  if (l.error) throw l.error;
+  leads = l.data || [];
+  activity = a.data || [];
   render();
+  document.getElementById('last-upd').textContent =
+    'atualizado ' + new Date().toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 }
 
-// ─────────────────────────────────────────
-//  RENDER
-// ─────────────────────────────────────────
-function render() {
-  const board = document.getElementById('board');
-  board.innerHTML = '';
-  const q = searchQuery.toLowerCase();
-  const filtered = q
-    ? cards.filter(c =>
-        c.name.toLowerCase().includes(q) ||
-        (c.niche||'').toLowerCase().includes(q) ||
-        (c.email||'').toLowerCase().includes(q))
-    : cards;
-
-  STAGES.forEach(stage => {
-    const sc = filtered.filter(c => c.stage === stage.id);
-    const col = document.createElement('div');
-    col.className = 'column';
-    col.dataset.stage = stage.id;
-    col.innerHTML = `
-      <div class="col-header">
-        <div class="col-dot" style="background:${stage.color}"></div>
-        <span class="col-title">${stage.icon} ${stage.label}</span>
-        <span class="col-count">${sc.length}</span>
-      </div>
-      <div class="col-body" id="col-${stage.id}"></div>
-      <div class="col-add">
-        <button onclick="openModal('${stage.id}')">
-          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-          Adicionar
-        </button>
-      </div>`;
-    board.appendChild(col);
-    const body = col.querySelector(`#col-${stage.id}`);
-    if (sc.length === 0) {
-      body.innerHTML = `<div class="empty-state"><span>📭</span>Nenhum canal aqui</div>`;
-    } else {
-      sc.forEach(card => body.appendChild(buildCard(card)));
-    }
-    setupDropZone(body, stage.id);
-  });
-  renderStats();
+async function loadCfg() {
+  try {
+    const { data } = await sb.from('app_settings').select('*');
+    cfg = {};
+    (data || []).forEach(r => cfg[r.key] = r.value);
+    document.getElementById('tog-auto-find').checked = cfg.auto_find === 'true';
+    document.getElementById('tog-auto-send').checked  = cfg.auto_send  === 'true';
+    if (cfg.backend_url) localStorage.setItem('bk_url', cfg.backend_url);
+  } catch(e) { cfg = {}; }
 }
 
-function buildCard(c) {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.dataset.id = c.id;
-  el.draggable = true;
-
-  const initials  = c.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-  const thumbBg   = strColor(c.name);
-  const subsFmt   = c.subs ? fmtSubs(c.subs) : null;
-  const prioBadge = c.prio ? `<span class="badge badge-prio-${c.prio}">${{alta:'🔴 Alta',media:'🟡 Média',baixa:'🟢 Baixa'}[c.prio]}</span>` : '';
-  const nicheBadge = c.niche ? `<span class="badge badge-niche">${c.niche}</span>` : '';
-  const subsBadge  = subsFmt ? `<span class="badge badge-subs">👥 ${subsFmt}</span>` : '';
-  const urlTxt     = c.url ? `<a href="${c.url}" target="_blank">${c.url.replace(/https?:\/\//,'').slice(0,28)}…</a>` : '';
-  const dateStr    = c.created ? fmtDate(c.created) : '';
-
-  const scriptHtml = c.script ? `
-    <div class="card-script">
-      <div class="card-script-header">
-        <span class="card-script-label">✉️ Script</span>
-        <button class="card-script-copy" id="cpbtn-${c.id}" onclick="copyScript('${c.id}',event)">📋 Copiar</button>
-      </div>
-      <div class="card-script-text" id="sctxt-${c.id}">${esc(c.script)}</div>
-      <button class="card-script-expand" onclick="toggleScript('${c.id}',event)">ver completo ↓</button>
-    </div>` : '';
-
-  el.innerHTML = `
-    <div class="card-top">
-      <div class="card-thumb" style="background:${thumbBg};color:#fff">${initials}</div>
-      <div class="card-info">
-        <div class="card-name" title="${esc(c.name)}">${esc(c.name)}</div>
-        ${urlTxt ? `<div class="card-url">${urlTxt}</div>` : ''}
-      </div>
-      <div class="card-actions">
-        <button title="Editar"  onclick="editCard('${c.id}')">✏️</button>
-        <button title="Excluir" onclick="deleteCard('${c.id}')">🗑️</button>
-      </div>
-    </div>
-    <div class="card-meta">${nicheBadge}${subsBadge}${prioBadge}</div>
-    ${c.notes ? `<div class="card-notes">${esc(c.notes)}</div>` : ''}
-    ${scriptHtml}
-    ${dateStr ? `<div class="card-date">🕐 ${dateStr}</div>` : ''}`;
-
-  el.addEventListener('dragstart', e => { dragCard = c.id; el.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
-  el.addEventListener('dragend',   () => { dragCard = null; el.classList.remove('dragging'); document.querySelectorAll('.drop-placeholder').forEach(p=>p.remove()); });
-  return el;
+async function upsertCfg(key, value) {
+  await sb.from('app_settings').upsert({ key, value }, { onConflict: 'key' });
+  cfg[key] = value;
 }
 
-function setupDropZone(zone, stageId) {
-  zone.addEventListener('dragover', e => {
-    e.preventDefault(); e.dataTransfer.dropEffect = 'move';
-    if (!zone.querySelector('.drop-placeholder'))
-      zone.appendChild(Object.assign(document.createElement('div'), { className:'drop-placeholder' }));
-  });
-  zone.addEventListener('dragleave', e => {
-    if (!zone.contains(e.relatedTarget)) zone.querySelectorAll('.drop-placeholder').forEach(p=>p.remove());
-  });
-  zone.addEventListener('drop', async e => {
-    e.preventDefault(); zone.querySelectorAll('.drop-placeholder').forEach(p=>p.remove());
-    if (!dragCard) return;
-    const card = cards.find(c => c.id === dragCard);
-    if (card && card.stage !== stageId) {
-      card.stage = stageId;
-      try {
-        await dbUpsert(card);
-        render();
-        toast(`Movido para "${STAGES.find(s=>s.id===stageId).label}"`, 'success');
-      } catch(e) { toast('Erro ao mover card', 'error'); console.error(e); }
-    }
-  });
+async function upd(id, changes) {
+  const { error } = await sb.from('channels').update(changes).eq('id', id);
+  if (error) throw error;
+  const i = leads.findIndex(l => l.id === id);
+  if (i !== -1) leads[i] = { ...leads[i], ...changes };
 }
+
+async function log(type, msg, lid = null) {
+  try {
+    const row = { id: crypto.randomUUID(), created_at: new Date().toISOString(), type, message: msg, lead_id: lid };
+    await sb.from('activity_log').insert(row);
+    activity.unshift(row);
+    renderAct();
+  } catch(e) {}
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// RENDER
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+function render() { renderStats(); renderBoard(); renderAct(); }
 
 function renderStats() {
-  const total    = cards.length;
-  const contato  = cards.filter(c=>['email','sample','followup','contact'].includes(c.stage)).length;
-  const fechados = cards.filter(c=>c.stage==='fechado').length;
-  document.getElementById('statsBar').innerHTML = `
-    <div class="stat-chip">Total <strong>${total}</strong></div>
-    <div class="stat-chip">Em contato <strong>${contato}</strong></div>
-    <div class="stat-chip">Fechados <strong>${fechados}</strong></div>`;
+  const tot = leads.length;
+  const pend  = leads.filter(l => l.stage === 'pendente').length;
+  const sent  = leads.filter(l => ['email_enviado','sample_video','em_contato','follow_up','desistente'].includes(l.stage)).length;
+  const reply = leads.filter(l => l.stage === 'em_contato').length;
+  const fu    = leads.filter(l => l.followup_enabled).length;
+  document.getElementById('s-total').textContent = tot;
+  document.getElementById('s-pend').textContent  = pend;
+  document.getElementById('s-sent').textContent  = sent;
+  document.getElementById('s-reply').textContent = reply;
+  document.getElementById('s-fu').textContent    = fu;
 }
 
-// ─────────────────────────────────────────
-//  COPY / TOGGLE SCRIPT
-// ─────────────────────────────────────────
-function copyScript(id, e) {
-  e.stopPropagation();
-  const card = cards.find(c => c.id === id);
-  if (!card?.script) return;
-  navigator.clipboard.writeText(card.script).then(() => {
-    const btn = document.getElementById(`cpbtn-${id}`);
-    if (btn) { btn.textContent = '✅ Copiado!'; btn.classList.add('copied'); setTimeout(()=>{ btn.textContent='📋 Copiar'; btn.classList.remove('copied'); }, 2000); }
-    toast('Script copiado!', 'success');
+function renderBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+  STAGES.forEach(st => {
+    const items = leads.filter(l => l.stage === st.id);
+    const col = document.createElement('div');
+    col.className = 'col';
+    col.innerHTML = `
+      <div class="col-hdr">
+        <div class="col-title"><div class="sdot" style="background:${st.color}"></div>${st.label}</div>
+        <span class="col-cnt">${items.length}</span>
+      </div>
+      <div class="col-cards" id="cc-${st.id}"
+           ondragover="onOver(event,'${st.id}')"
+           ondrop="onDrop(event,'${st.id}')"
+           ondragleave="e=>e.currentTarget.classList.remove('over')">
+        ${items.length ? items.map(l => cardHtml(l)).join('') : `<div class="empty-col"><div class="ei">${st.icon}</div>Vazio</div>`}
+      </div>`;
+    board.appendChild(col);
+  });
+  board.querySelectorAll('.card').forEach(c => {
+    c.addEventListener('dragstart', e => { dragId = c.dataset.id; c.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+    c.addEventListener('dragend',   e => c.classList.remove('dragging'));
   });
 }
 
-function toggleScript(id, e) {
-  e.stopPropagation();
-  const el = document.getElementById(`sctxt-${id}`);
-  const btn = e.target;
-  if (!el) return;
-  const exp = el.style.overflow === 'visible';
-  el.style.webkitLineClamp = exp ? '4' : 'unset';
-  el.style.overflow  = exp ? 'hidden'  : 'visible';
-  el.style.display   = exp ? '-webkit-box' : 'block';
-  btn.textContent    = exp ? 'ver completo ↓' : 'recolher ↑';
+function cardHtml(l) {
+  const subs = l.subs ? (+l.subs).toLocaleString('en') : '?';
+  const prev = l.script ? l.script.replace(/^Subject:.*\n*/i,'').trim().slice(0,110) : '';
+
+  let actions = '';
+  if (l.stage === 'pendente') {
+    actions = `
+      <button class="btn btn-ok btn-sm" onclick="approve('${l.id}',event)">‚úì Aprovar</button>
+      <button class="btn btn-del btn-sm" onclick="discard('${l.id}',event)">‚úï</button>`;
+  } else if (l.stage === 'email_enviado') {
+    actions = `
+      <div class="fu-row ${l.followup_enabled?'on':''}" onclick="quickFu('${l.id}',event)">
+        <span>${l.followup_enabled ? 'üîî' : 'üîï'}</span>
+        ${l.followup_enabled ? 'Follow-up ativo' : 'Ativar follow-up'}
+      </div>`;
+  } else if (l.stage === 'em_contato' && l.reply_content) {
+    actions = `<button class="btn btn-ok btn-sm" onclick="openLead('${l.id}',event,'reply')">üí¨ Ver resposta</button>`;
+  }
+
+  const replyBox = (l.stage === 'em_contato' && l.reply_content)
+    ? `<div class="c-reply">üí¨ ${l.reply_content.slice(0,100)}</div>` : '';
+
+  return `<div class="card" draggable="true" data-id="${l.id}" onclick="openLead('${l.id}',event)">
+    <div class="c-name">${l.name||'‚Äì'}</div>
+    <div class="c-meta">
+      ${l.niche ? `<span class="badge" style="background:rgba(91,108,249,.14);color:#8fa3ff">${l.niche.slice(0,28)}</span>` : ''}
+      ${l.subs  ? `<span class="badge" style="background:var(--surface);color:var(--muted)">üë• ${subs}</span>` : ''}
+    </div>
+    <div class="c-email">${l.email||'‚Äì'}</div>
+    ${replyBox}
+    ${prev ? `<div class="c-preview">${prev}‚Ä¶</div>` : ''}
+    ${actions ? `<div class="c-actions">${actions}</div>` : ''}
+  </div>`;
 }
 
-// ─────────────────────────────────────────
-//  MODAL
-// ─────────────────────────────────────────
-function openModal(defaultStage = 'lead', editId = null) {
-  document.getElementById('editId').value = editId || '';
-  document.getElementById('modalTitle').textContent = editId ? 'Editar Canal' : 'Novo Canal';
-  document.getElementById('modalIcon').textContent  = editId ? '✏️' : '📺';
-  if (editId) {
-    const c = cards.find(x => x.id === editId);
-    if (c) {
-      document.getElementById('fName').value  = c.name   || '';
-      document.getElementById('fUrl').value   = c.url    || '';
-      document.getElementById('fNiche').value = c.niche  || '';
-      document.getElementById('fSubs').value  = c.subs   || '';
-      document.getElementById('fEmail').value = c.email  || '';
-      document.getElementById('fPrio').value  = c.prio   || '';
-      document.getElementById('fStage').value = c.stage  || 'lead';
-      document.getElementById('fNotes').value = c.notes  || '';
-      document.getElementById('fScript').value= c.script || '';
+function renderAct() {
+  const el = document.getElementById('act-list');
+  if (!activity.length) { el.innerHTML = '<div class="muted small" style="text-align:center;padding:20px">Sem atividade</div>'; return; }
+  el.innerHTML = activity.slice(0,40).map(a => {
+    const dt = new Date(a.created_at);
+    const t = dt.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    const d = dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+    return `<div class="act-item"><div class="act-time">${d} ${t}</div><div class="act-msg">${a.message}</div></div>`;
+  }).join('');
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// DRAG & DROP
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+let dragId = null;
+
+function onOver(e, sid) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.getElementById('cc-'+sid).classList.add('over');
+}
+
+async function onDrop(e, sid) {
+  e.preventDefault();
+  document.getElementById('cc-'+sid).classList.remove('over');
+  if (!dragId) return;
+  const lead = leads.find(l => l.id === dragId);
+  if (!lead || lead.stage === sid) return;
+  try {
+    await upd(dragId, { stage: sid });
+    const lbl = STAGES.find(s => s.id === sid)?.label || sid;
+    await log('move', `"${lead.name}" ‚Üí ${lbl}`, dragId);
+    if (sid === 'lead' && cfg.auto_send === 'true') triggerSendOne(dragId);
+    render();
+  } catch(err) { toast('Erro: '+err.message,'err'); }
+  dragId = null;
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// ACTIONS
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+async function approve(id, e) {
+  e?.stopPropagation();
+  const l = leads.find(x => x.id === id); if (!l) return;
+  try {
+    await upd(id, { stage: 'lead' });
+    await log('approve', `"${l.name}" aprovado`, id);
+    if (cfg.auto_send === 'true') triggerSendOne(id);
+    render();
+    toast(`"${l.name}" aprovado!`, 'ok');
+  } catch(err) { toast(err.message,'err'); }
+}
+
+async function discard(id, e) {
+  e?.stopPropagation();
+  const l = leads.find(x => x.id === id); if (!l) return;
+  try {
+    await upd(id, { stage: 'desistente' });
+    await log('discard', `"${l.name}" descartado`, id);
+    render();
+  } catch(err) { toast(err.message,'err'); }
+}
+
+async function quickFu(id, e) {
+  e?.stopPropagation();
+  const l = leads.find(x => x.id === id); if (!l) return;
+  const on = !l.followup_enabled;
+  try {
+    await upd(id, { followup_enabled: on });
+    await log('followup', `Follow-up ${on?'ativado':'desativado'} para "${l.name}"`, id);
+    render();
+    toast(`Follow-up ${on?'ativado':'desativado'} para "${l.name}"`, 'ok');
+  } catch(err) { toast(err.message,'err'); }
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// BACKEND
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+function checkBackend() {
+  if (!backendUrl()) { toast('Configure a URL do backend em ‚öôÔ∏è Config ‚Üí Backend','err'); return false; }
+  return true;
+}
+
+async function findLeads() {
+  if (!checkBackend()) return;
+  const btn = document.getElementById('btn-find');
+  btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Iniciando...';
+  try {
+    const r = await fetch(backendUrl()+'/api/find-leads', { method:'POST' });
+    const d = await r.json();
+    if (d.status === 'started') {
+      openM('m-prog');
+      pollT = setInterval(pollJob, 2500);
+      await log('find_leads', 'Busca por novos leads iniciada');
+    } else if (d.error === 'running') {
+      toast('Busca j√° est√° em andamento', 'info');
+      btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
     }
+  } catch(err) {
+    toast('Erro: '+err.message, 'err');
+    btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
+  }
+}
+
+async function pollJob() {
+  try {
+    const r = await fetch(backendUrl()+'/api/job-status');
+    const s = await r.json();
+    document.getElementById('prog-msg').textContent   = s.message || '...';
+    document.getElementById('prog-fill').style.width  = (s.progress||0)+'%';
+    document.getElementById('prog-found').textContent = s.found||0;
+    if (!s.running) {
+      clearInterval(pollT);
+      closeM('m-prog');
+      await loadAll();
+      const btn = document.getElementById('btn-find');
+      btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
+      toast(`Busca conclu√≠da! ${s.found||0} novos leads.`, 'ok');
+      await log('find_done', `Busca conclu√≠da: ${s.found||0} leads adicionados`);
+    }
+  } catch(e) {}
+}
+
+function cancelFind() {
+  clearInterval(pollT);
+  closeM('m-prog');
+  const btn = document.getElementById('btn-find');
+  btn.disabled = false; btn.innerHTML = 'üîç Buscar Leads';
+}
+
+async function sendEmails() {
+  if (!checkBackend()) return;
+  const pend = leads.filter(l => l.stage === 'lead');
+  if (!pend.length) { toast('Nenhum lead em "Lead" para enviar','info'); return; }
+  confirm2('Enviar Emails', `Enviar para ${pend.length} lead${pend.length>1?'s':''} em "Lead"?`, async () => {
+    const btn = document.getElementById('btn-send');
+    btn.disabled = true; btn.innerHTML = '<div class="spin"></div> Enviando...';
+    try {
+      const r = await fetch(backendUrl()+'/api/send-emails', { method:'POST' });
+      const d = await r.json();
+      toast(`${d.sent||0} emails enviados!`, 'ok');
+      await log('emails_sent', `${d.sent||0} emails enviados para leads`);
+      await loadAll();
+    } catch(err) { toast(err.message,'err'); }
+    finally { btn.disabled=false; btn.innerHTML='üìß Enviar Emails'; }
+  });
+}
+
+async function triggerSendOne(id) {
+  try { await fetch(backendUrl()+'/api/send-email/'+id, { method:'POST' }); } catch(e) {}
+}
+
+async function testBackend() {
+  const url = document.getElementById('cfg-url').value.trim();
+  if (!url) { toast('Insira a URL','err'); return; }
+  try {
+    const r = await fetch(url+'/health');
+    const d = await r.json();
+    toast(d.status==='ok' ? '‚úÖ Backend conectado!' : '‚ùå Resposta inesperada', d.status==='ok'?'ok':'err');
+  } catch(e) { toast('‚ùå N√£o conectou: '+e.message, 'err'); }
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// LEAD MODAL
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+function openLead(id, e, tab='info') {
+  if (e?.target?.closest?.('.c-actions,.fu-row')) return;
+  const l = leads.find(x => x.id === id); if (!l) return;
+  cur = l;
+  document.getElementById('ml-title').textContent  = l.name||'Lead';
+  document.getElementById('l-name').value   = l.name||'';
+  document.getElementById('l-email').value  = l.email||'';
+  document.getElementById('l-niche').value  = l.niche||'';
+  document.getElementById('l-subs').value   = l.subs||'';
+  document.getElementById('l-url').value    = l.url||'';
+  document.getElementById('l-stage').value  = l.stage||'pendente';
+  document.getElementById('l-notes').value  = l.notes||'';
+  document.getElementById('l-script').value = l.script||'';
+  document.getElementById('l-fu').checked   = !!l.followup_enabled;
+  onFuToggle();
+  const ra = document.getElementById('reply-area');
+  if (l.reply_content) {
+    const dt = l.replied_at ? new Date(l.replied_at).toLocaleDateString('pt-BR') : '‚Äì';
+    ra.innerHTML = `<div class="field"><label>Resposta recebida em ${dt}</label><textarea readonly style="min-height:160px;background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.2);color:#a3e6b8">${l.reply_content}</textarea></div>`;
   } else {
-    ['fName','fUrl','fNiche','fSubs','fEmail','fNotes','fScript'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('fPrio').value  = '';
-    document.getElementById('fStage').value = defaultStage;
+    ra.innerHTML = `<div style="text-align:center;padding:30px;color:var(--muted)">Nenhuma resposta detectada ainda.<br><span class="small">O backend verifica respostas automaticamente.</span></div>`;
   }
-  document.getElementById('modalOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('fName').focus(), 150);
+  leadTab(tab);
+  openM('m-lead');
 }
 
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-function closeModalOutside(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
-
-async function saveCardModal() {
-  const name = document.getElementById('fName').value.trim();
-  if (!name) { toast('Informe o nome do canal', 'error'); return; }
-
-  const saveBtn = document.getElementById('saveBtn');
-  saveBtn.disabled = true; saveBtn.textContent = 'Salvando…';
-
-  const editId = document.getElementById('editId').value;
-  const data = {
-    name,
-    url:    document.getElementById('fUrl').value.trim(),
-    niche:  document.getElementById('fNiche').value.trim(),
-    subs:   document.getElementById('fSubs').value.trim(),
-    email:  document.getElementById('fEmail').value.trim(),
-    prio:   document.getElementById('fPrio').value,
-    stage:  document.getElementById('fStage').value,
-    notes:  document.getElementById('fNotes').value.trim(),
-    script: document.getElementById('fScript').value.trim(),
-  };
-
+async function saveLead() {
+  if (!cur) return;
   try {
-    if (editId) {
-      const idx = cards.findIndex(c => c.id === editId);
-      const updated = { ...cards[idx], ...data };
-      await dbUpsert(updated);
-      if (idx !== -1) cards[idx] = updated;
-      toast('Canal atualizado!', 'success');
-    } else {
-      const newCard = { id: genId(), created: Date.now(), ...data };
-      await dbUpsert(newCard);
-      cards.push(newCard);
-      toast('Canal adicionado!', 'success');
-    }
-    closeModal();
+    await upd(cur.id, {
+      name:             document.getElementById('l-name').value,
+      email:            document.getElementById('l-email').value,
+      niche:            document.getElementById('l-niche').value,
+      subs:             document.getElementById('l-subs').value,
+      url:              document.getElementById('l-url').value,
+      stage:            document.getElementById('l-stage').value,
+      notes:            document.getElementById('l-notes').value,
+      script:           document.getElementById('l-script').value,
+      followup_enabled: document.getElementById('l-fu').checked,
+    });
+    closeM('m-lead');
     render();
-  } catch(e) {
-    toast('Erro ao salvar. Tente novamente.', 'error');
-    console.error(e);
-  } finally {
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = `<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg> Salvar`;
-  }
+    toast('Salvo!', 'ok');
+  } catch(err) { toast(err.message,'err'); }
 }
 
-function editCard(id) { openModal('lead', id); }
+function onFuToggle() {
+  const on = document.getElementById('l-fu').checked;
+  document.getElementById('fu-desc').textContent = on
+    ? 'Ativo ‚Äî follow-up enviado automaticamente ap√≥s ' + (cfg.followup_days||3) + ' dias sem resposta'
+    : 'Desativado ‚Äî nenhum follow-up ser√° enviado';
+}
 
-async function deleteCard(id) {
-  if (!confirm('Remover este canal da prospecção?')) return;
+function leadTab(t) {
+  curLeadTab = t;
+  ['info','script','reply'].forEach(x => {
+    document.getElementById('lt-'+x).className = 'tab'+(x===t?' on':'');
+    document.getElementById('lc-'+x).style.display = x===t ? '' : 'none';
+  });
+}
+
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// SETTINGS MODAL
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+function openSettings(tab='tpl') {
+  document.getElementById('tpl1').value      = cfg.tpl1 || TPL1;
+  document.getElementById('tpl2').value      = cfg.tpl2 || TPL2;
+  document.getElementById('cfg-url').value   = backendUrl();
+  document.getElementById('cfg-smin').value  = cfg.subs_min  || '15000';
+  document.getElementById('cfg-smax').value  = cfg.subs_max  || '100000';
+  document.getElementById('cfg-fudays').value= cfg.followup_days || '3';
+  cfgTab(tab);
+  openM('m-cfg');
+}
+
+async function saveSettings() {
   try {
-    await dbDelete(id);
-    cards = cards.filter(c => c.id !== id);
-    render();
-    toast('Canal removido', 'info');
-  } catch(e) { toast('Erro ao remover', 'error'); console.error(e); }
+    await Promise.all([
+      upsertCfg('tpl1',           document.getElementById('tpl1').value),
+      upsertCfg('tpl2',           document.getElementById('tpl2').value),
+      upsertCfg('backend_url',    document.getElementById('cfg-url').value.trim()),
+      upsertCfg('subs_min',       document.getElementById('cfg-smin').value),
+      upsertCfg('subs_max',       document.getElementById('cfg-smax').value),
+      upsertCfg('followup_days',  document.getElementById('cfg-fudays').value),
+    ]);
+    if (cfg.backend_url) localStorage.setItem('bk_url', cfg.backend_url);
+    closeM('m-cfg');
+    checkBk();
+    toast('Configura√ß√µes salvas!', 'ok');
+  } catch(err) { toast(err.message,'err'); }
 }
 
-// ─────────────────────────────────────────
-//  TOAST
-// ─────────────────────────────────────────
-let toastTimer;
-function toast(msg, type = 'info') {
-  const el = document.getElementById('toast');
-  el.className = type;
-  document.getElementById('toastMsg').textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+async function saveToggles() {
+  await Promise.all([
+    upsertCfg('auto_find', document.getElementById('tog-auto-find').checked+''),
+    upsertCfg('auto_send', document.getElementById('tog-auto-send').checked+''),
+  ]);
 }
 
-// ─────────────────────────────────────────
-//  UTILS
-// ─────────────────────────────────────────
-function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-function strColor(str) { let h=0; for(let i=0;i<str.length;i++) h=str.charCodeAt(i)+((h<<5)-h); return `hsl(${Math.abs(h)%360},55%,38%)`; }
-function fmtSubs(v) { const n=parseInt(v.replace(/\D/g,'')); if(isNaN(n))return v; if(n>=1e6)return(n/1e6).toFixed(1).replace('.0','')+'M'; if(n>=1e3)return(n/1e3).toFixed(0)+'K'; return n+''; }
-function fmtDate(ts) { return new Date(ts).toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}); }
-function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function cfgTab(t) {
+  ['tpl','backend','search'].forEach(x => {
+    document.getElementById('st-'+x).className  = 'tab'+(x===t?' on':'');
+    document.getElementById('sc-'+x).style.display = x===t ? '' : 'none';
+  });
+}
 
-// ─────────────────────────────────────────
-//  SEARCH + KEYBOARD
-// ─────────────────────────────────────────
-document.getElementById('search').addEventListener('input', e => { searchQuery = e.target.value; render(); });
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-  if (e.key === 'Enter' && e.ctrlKey && document.getElementById('modalOverlay').classList.contains('open')) saveCardModal();
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// UI HELPERS
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+const openM  = id => document.getElementById(id).classList.remove('hidden');
+const closeM = id => document.getElementById(id).classList.add('hidden');
+const openActPanel  = () => document.getElementById('act-panel').classList.add('open');
+const closeActPanel = () => document.getElementById('act-panel').classList.remove('open');
+
+function confirm2(title, msg, cb) {
+  document.getElementById('conf-title').textContent = title;
+  document.getElementById('conf-msg').textContent   = msg;
+  document.getElementById('conf-ok').onclick = () => { closeM('m-confirm'); cb(); };
+  openM('m-confirm');
+}
+
+function toast(msg, type='info') {
+  const wrap = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => el.remove(), 3600);
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.add('hidden'); });
 });
 
-// ─────────────────────────────────────────
-//  START
-// ─────────────────────────────────────────
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
+// START
+// ‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê‚ïê
 init();
 </script>
 </body>
