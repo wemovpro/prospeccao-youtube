@@ -161,6 +161,12 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--dim);border-radius:3px}
+/* Scroll horizontal do board — maior e sempre visível */
+.kb-wrap::-webkit-scrollbar{height:10px}
+.kb-wrap::-webkit-scrollbar-track{background:var(--surface);border-radius:5px}
+.kb-wrap::-webkit-scrollbar-thumb{background:var(--subtle);border-radius:5px}
+.kb-wrap::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+.kb-wrap{scrollbar-width:thin;scrollbar-color:var(--subtle) var(--surface)}
 </style>
 </head>
 <body>
@@ -255,9 +261,8 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
             <option value="pendente">Pendente</option>
             <option value="lead">Lead</option>
             <option value="email_enviado">Email Enviado</option>
-            <option value="demanda_de_video">Demanda de Vídeo</option>
             <option value="sample_video">Sample Video</option>
-            <option value="em_contato">Em Contato</option>
+            <option value="em_contato">PROPOSTA</option>
             <option value="follow_up">Follow Up</option>
             <option value="cancelados">CANCELADOS</option>
           </select>
@@ -381,14 +386,13 @@ const SB_URL = 'https://jegccnxuzzyqmhfenhni.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImplZ2Njbnh1enp5cW1oZmVuaG5pIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzcyNTUsImV4cCI6MjA5NTMxMzI1NX0.0QftXiHF3qbbDkwTqgwElz2-PgW5jMz7EbS7tkFXHAA';
 
 const STAGES = [
-  { id:'pendente',         label:'Pendente',         color:'#eab308', icon:'&#8987;' },
-  { id:'lead',             label:'Lead',              color:'#5b6cf9', icon:'&#127919;' },
-  { id:'email_enviado',    label:'Email Enviado',     color:'#a855f7', icon:'&#128140;' },
-  { id:'demanda_de_video', label:'Demanda de Vídeo',  color:'#f97316', icon:'&#127916;' },
-  { id:'sample_video',     label:'Sample Video',      color:'#22c55e', icon:'&#127909;' },
-  { id:'em_contato',       label:'Em Contato',        color:'#06b6d4', icon:'&#128172;' },
-  { id:'follow_up',        label:'Follow Up',         color:'#06b6d4', icon:'&#128260;' },
-  { id:'cancelados',       label:'CANCELADOS',        color:'#6b7280', icon:'&#10060;' },
+  { id:'pendente',      label:'Pendente',      color:'#eab308', icon:'&#8987;' },
+  { id:'lead',          label:'Lead',           color:'#5b6cf9', icon:'&#127919;' },
+  { id:'email_enviado', label:'Email Enviado',  color:'#a855f7', icon:'&#128140;' },
+  { id:'sample_video',  label:'Sample Video',   color:'#f97316', icon:'&#127909;' },
+  { id:'em_contato',    label:'PROPOSTA',       color:'#22c55e', icon:'&#128172;' },
+  { id:'follow_up',     label:'Follow Up',      color:'#06b6d4', icon:'&#128260;' },
+  { id:'cancelados',    label:'CANCELADOS',     color:'#6b7280', icon:'&#10060;' },
 ];
 
 const TPL1 = `Subject: I already edited a video for your channel
@@ -435,6 +439,8 @@ async function init() {
     await loadAll();
     setDbStatus(true);
     checkBk();
+    // Migração: desistente → cancelados (roda uma vez, idempotente)
+    sb.from('channels').update({ stage: 'cancelados' }).eq('stage', 'desistente').then(() => {});
     // Auto-refresh every 2 minutes
     setInterval(loadAll, 120000);
     // Poll search status every 8 seconds
@@ -545,7 +551,7 @@ function render() { renderStats(); renderBoard(); renderAct(); }
 function renderStats() {
   const tot = leads.length;
   const pend  = leads.filter(l => l.stage === 'pendente').length;
-  const sent  = leads.filter(l => ['email_enviado','demanda_de_video','sample_video','em_contato','follow_up','cancelados'].includes(l.stage)).length;
+  const sent  = leads.filter(l => ['email_enviado','sample_video','em_contato','follow_up','cancelados'].includes(l.stage)).length;
   const reply = leads.filter(l => l.stage === 'em_contato').length;
   const fu    = leads.filter(l => l.followup_enabled).length;
   document.getElementById('s-total').textContent = tot;
@@ -560,7 +566,11 @@ function renderBoard() {
   board.innerHTML = '';
   STAGES.forEach(st => {
     // queued_email fica visível na coluna Lead enquanto aguarda envio
-    const items = leads.filter(l => l.stage === st.id || (st.id === 'lead' && l.stage === 'queued_email'));
+    // desistente (legado) aparece em CANCELADOS até a migração rodar
+    const items = leads.filter(l =>
+      l.stage === st.id ||
+      (st.id === 'lead'       && l.stage === 'queued_email') ||
+      (st.id === 'cancelados' && l.stage === 'desistente'));
     const col = document.createElement('div');
     col.className = 'col';
     col.innerHTML = `
@@ -724,10 +734,10 @@ async function advanceLead(id, e) {
   e?.stopPropagation();
   const l = leads.find(x => x.id === id); if (!l) return;
   try {
-    await upd(id, { stage: 'demanda_de_video' });
-    await log('advance', `"${l.name}" avançou para Demanda de Vídeo`, id);
+    await upd(id, { stage: 'sample_video' });
+    await log('advance', `"${l.name}" avançou para Sample Video`, id);
     render();
-    toast(`"${l.name}" → Demanda de Vídeo 🎬`, 'ok');
+    toast(`"${l.name}" → Sample Video`, 'ok');
   } catch(err) { toast(err.message,'err'); }
 }
 
