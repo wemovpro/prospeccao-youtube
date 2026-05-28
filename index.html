@@ -190,6 +190,7 @@ hr{border:none;border-top:1px solid var(--border);margin:16px 0}
 <div class="stats" id="stats">
   <div class="stat"><div class="stat-lbl">Total</div><div class="stat-val" id="s-total" style="color:var(--text)">–</div><div class="stat-sub">na pipeline</div></div>
   <div class="stat"><div class="stat-lbl">Pendentes</div><div class="stat-val" id="s-pend" style="color:var(--yellow)">–</div><div class="stat-sub">aguardando aprovação</div></div>
+  <div class="stat"><div class="stat-lbl">Leads</div><div class="stat-val" id="s-leads" style="color:var(--accent)">–</div><div class="stat-sub">aprovados p/ envio</div></div>
   <div class="stat"><div class="stat-lbl">Emails Enviados</div><div class="stat-val" id="s-sent" style="color:var(--purple)">–</div><div class="stat-sub">acumulado</div></div>
   <div class="stat"><div class="stat-lbl">Em Contato</div><div class="stat-val" id="s-reply" style="color:var(--green)">–</div><div class="stat-sub">responderam</div></div>
   <div class="stat"><div class="stat-lbl">Follow-ups</div><div class="stat-val" id="s-fu" style="color:var(--cyan)">–</div><div class="stat-sub">ativos</div></div>
@@ -549,13 +550,15 @@ async function log(type, msg, lid = null) {
 function render() { renderStats(); renderBoard(); renderAct(); }
 
 function renderStats() {
-  const tot = leads.length;
+  const tot   = leads.length;
   const pend  = leads.filter(l => l.stage === 'pendente').length;
+  const aprov = leads.filter(l => l.stage === 'lead' || l.stage === 'queued_email').length;
   const sent  = leads.filter(l => ['email_enviado','sample_video','em_contato','follow_up','cancelados'].includes(l.stage)).length;
   const reply = leads.filter(l => l.stage === 'em_contato').length;
   const fu    = leads.filter(l => l.followup_enabled).length;
   document.getElementById('s-total').textContent = tot;
   document.getElementById('s-pend').textContent  = pend;
+  document.getElementById('s-leads').textContent = aprov;
   document.getElementById('s-sent').textContent  = sent;
   document.getElementById('s-reply').textContent = reply;
   document.getElementById('s-fu').textContent    = fu;
