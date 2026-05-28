@@ -493,20 +493,19 @@ def api_job_status():
 
 @app.route('/api/send-emails', methods=['POST'])
 def api_send_emails():
-    if not GMAIL_PASS:
-        return jsonify({'error': 'GMAIL_APP_PASSWORD not configured'}), 500
-    leads = sb_get('channels', 'stage=eq.lead&email=neq.&script=neq.&select=*')
-    sent, errors = 0, 0
+    """Enfileira todos os leads (stage=lead) para envio pelo email_worker.py no Mac."""
+    leads = sb_get('channels', 'stage=eq.lead&email=neq.&script=neq.&select=id,name')
+    if not leads:
+        return jsonify({'queued': 0, 'msg': 'Nenhum lead com email/script encontrado'})
+    queued = 0
     for l in leads:
         try:
-            ok, msg = do_send_one(l['id'])
-            if ok: sent += 1
-            else: errors += 1
-            time.sleep(2)
-        except Exception as e:
-            errors += 1
-    log_activity('batch_send', f'{sent} emails enviados em lote')
-    return jsonify({'sent': sent, 'errors': errors})
+            sb_patch('channels', l['id'], {'stage': 'queued_email'})
+            queued += 1
+        except Exception:
+            pass
+    log_activity('batch_queue', f'{queued} emails enfileirados para envio')
+    return jsonify({'ok': True, 'queued': queued})
 
 @app.route('/api/send-email/<lead_id>', methods=['POST'])
 def api_send_one(lead_id):
